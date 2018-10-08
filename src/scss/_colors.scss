@@ -1,0 +1,50 @@
+
+$product: 'gk' !default;
+$mode: 'day' !default;
+
+$productColor: #00a3ff;
+$picFilter: none;
+$stressFilter: none;
+$ppicFilter: none;
+$white: #fff;
+
+$background: white;
+$main-color: $productColor; // #00A4FF;
+$text-main-color: #282828;
+$stress-color: #ff5700;
+$muted-color: #969696; 
+$text-info-color: #646464;
+$primary-btn-color: #fe7213;
+$smc-bg-color: #fffcb7;
+$ot-bg-color: #fe7d25;
+$border-color: #ebebeb;
+
+$disableColors: (
+        bg: #f7f7f7,
+        text: #d0d0d0,
+);
+
+@if ($product == 'zk') {
+
+    $productColor: #ffa726;
+  $main-color: #ffa726;
+  $picFilter: hue-rotate(-166deg) brightness(128%);
+  $stressFilter: saturate(19);
+  $ppicFilter: $picFilter;
+}
+
+@if ($mode == 'night') {
+  $white: #dde0e2;
+  $background: #2e2e2e;
+  $main-color: $white; // #00A4FF,
+  $border-color: #2a2a2a;
+  $text-main-color: $white;
+  $stress-color: #ee5743;
+  $muted-color: #848484;
+  $text-info-color: $white; //#646464,
+  $disableColors: (
+          bg: #343434,
+          text: #2a2a2a
+  );
+  $picFilter: brightness(0) invert(88%);
+}
