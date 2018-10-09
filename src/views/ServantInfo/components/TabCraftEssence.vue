@@ -2,7 +2,7 @@
   <div class="craft-essence">
     <div class="craft-essence_title">{{data.name}}</div>
     <div class="craft-essence_header">
-      <img :src="base+data.imgPath" alt="" class="craft-essence_avatar"/>
+      <img :src="base+data.imgPath" alt="" class="craft-essence_avatar" @click="showPreview(previewPics)"/>
       <div class="row">
         <div class="col" data-title="画师">
           {{data.illust}}
@@ -44,7 +44,9 @@
 
 <script>
 import { BASE_URL } from '@/conf/image';
+import previewImage from '@/mixins/previewImage';
 export default {
+  mixins: [previewImage],
   data() {
     return {
       base: BASE_URL
@@ -58,9 +60,14 @@ export default {
       }
     }
   },
+  computed: {
+    previewPics() {
+      return [this.base + this.data.pic];
+    }
+  },
   methods: {
     introFormate(val) {
-      return val.replace(/^\s/,'').replace(/\s/g, '<br>');
+      return val.replace(/^\s/, '').replace(/\s/g, '<br>');
     }
   }
 };

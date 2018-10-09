@@ -1,7 +1,9 @@
 import Vue from 'vue';
 const state = {
   dTime: 0,
-  aliveList: []
+  aliveList: [],
+  showTitle: false,
+  title: 'fgoWiki'
 };
 const getters = {};
 const mutations = {
@@ -12,6 +14,12 @@ const mutations = {
 
   setAliveList(state, list) {
     state.aliveList = list;
+  },
+  setShowTitle(state, data) {
+    state.showTitle = data;
+  },
+  setTitle(state, text) {
+    state.title = text;
   }
 };
 const actions = {};

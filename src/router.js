@@ -28,7 +28,7 @@ const router = new Router({
           let list = await ServantApi.servantList();
           store.commit('servant/setList', list);
         }
-        document.querySelector('title').innerHTML = '英灵列表';
+
         next();
       }
     },
@@ -57,7 +57,6 @@ const router = new Router({
 });
 router.beforeEach(async (to, from, next) => {
   // ...
-
   if (routerStack.length === 0) {
     if (aliveList.indexOf(to.name) === -1) {
       aliveList.push(to.name);
@@ -68,6 +67,8 @@ router.beforeEach(async (to, from, next) => {
 });
 
 router.afterEach((to, from) => {
+  store.commit('setShowTitle', true);
+
   if (to.name === routerStack[routerStack.length - 1]) {
     // 后退
     routerStack.pop();

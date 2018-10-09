@@ -172,10 +172,13 @@ export default {
     filter: grayscale(100%);
   }
 }
-
+.treasure-tab {
+  margin-top: 10px;
+}
 .treasure-main {
   display: flex;
   align-items: center;
+  border: 1px solid var(--border-color);
 }
 .treasure-name {
   flex-grow: 1;
@@ -218,5 +221,6 @@ export default {
 }
 .attack-details {
   display: flex;
+  margin: 1em 0 4em;
 }
 </style>

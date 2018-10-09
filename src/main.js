@@ -19,8 +19,12 @@ import {
   RadioGroup,
   Radio,
   Tab,
-  Tabs
+  Tabs,
+  NavBar
 } from 'vant';
+
+
+Vue.use(NavBar);
 Vue.use(VueLazyload);
 Vue.use(Button);
 
@@ -35,6 +39,10 @@ Vue.use(RadioGroup);
 Vue.use(Radio);
 Vue.use(Tab).use(Tabs);
 Vue.config.productionTip = false;
+Vue.prototype.$setTitle = function(text){
+  document.querySelector('title').innerHTML = text;
+  store.commit('setTitle',text);
+}
 Vue.filter('bgImage', function(value) {
   return `background-image:url(${value})`;
 });

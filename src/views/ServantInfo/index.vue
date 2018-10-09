@@ -18,12 +18,13 @@
 </template>
 
 <script>
-import { ImagePreview } from 'vant';
 import ServantApi from './../../api/imp/ServantApi';
 import { getServantImages } from './../../conf/image';
 import { upperFirst } from 'lodash';
-let _not_goBack = false;
+import previewImage from './../../mixins/previewImage';
+//let _not_goBack = false;
 export default {
+  mixins: [previewImage],
   name: 'servantInfo',
   components: {
     TabCraftEssence: () => import('./components/TabCraftEssence.vue'),
@@ -44,8 +45,7 @@ export default {
         craftEssence: {
           title: '礼装'
         }
-      },
-      instance: null
+      }
     };
   },
   computed: {
@@ -85,14 +85,24 @@ export default {
       return _output;
     }
   },
-  async created() {
+  /*  async created() {
     this.info = await ServantApi.info(this.$route.params.ID);
     document.querySelector('title').innerHTML = this.info.name;
+  }, */
+  beforeRouteEnter(to, from, next) {
+    // 在渲染该组件的对应路由被 confirm 前调用
+    // 不！能！获取组件实例 `this`
+    // 因为当守卫执行前，组件实例还没被创建
+    next(async vm => {
+      vm.info = await ServantApi.info(vm.$route.params.ID);
+
+      vm.$setTitle(vm.info.name);
+    });
   },
   mounted() {
     document.body.scrollTop = 0;
-  },
-  methods: {
+  }
+  /*  methods: {
     showPreview(picList) {
       this.$router.push({
         query: {
@@ -122,16 +132,28 @@ export default {
         }
       }
     }
-  }
+  } */
 };
 </script>
+<style lang="scss">
+.van-tabs {
+  background: white;
+  padding-left: 10px;
+  padding-right: 10px;
+
+  &__wrap {
+    border: 1px solid var(--border-color);
+  }
+}
+</style>
 
 <style scoped lang="scss">
 .servant-info {
-  padding: 10px;
   &-header {
     display: flex;
     align-items: flex-start;
+    padding: 10px;
+    background: linear-gradient(white ,var(--border-color));
   }
   &-avatar {
     width: 80px;
