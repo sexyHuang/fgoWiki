@@ -140,9 +140,12 @@ export default {
   background: white;
   padding-left: 10px;
   padding-right: 10px;
-
+  
   &__wrap {
     border: 1px solid var(--border-color);
+  }
+  &__content {
+    padding-bottom: 10px;
   }
 }
 </style>
