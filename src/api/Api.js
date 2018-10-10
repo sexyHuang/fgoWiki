@@ -29,6 +29,7 @@ export default class Api extends BaseApi {
     console.warn('loginout方法未实现');
   }
   reject(error) {
+    Toast.clear();
     console.error(error);
   }
   before() {}
@@ -49,6 +50,7 @@ export default class Api extends BaseApi {
   }
   showNotice({ message, position, duration, className, type }) {
     duration = duration || 1500;
+    position = position || 'middle';
     Toast[type]({ message, position, duration });
   }
   async common(param) {
@@ -81,8 +83,8 @@ export default class Api extends BaseApi {
       }
     } catch (e) {
       console.error(e);
-      if (!window.phoneListener)
-        param.error ? param.error(res, param) : this.error('程序在开小差');
+
+      param.error ? param.error(res, param) : this.error('程序在开小差');
       throw Error('程序在开小差');
     }
     await this.after();

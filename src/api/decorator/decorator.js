@@ -69,7 +69,7 @@ export function autoAddUserInfo(target, key, descriptor) {
   };
 }
 
-export function cache(cache_key = '', cache_expried) {
+/* export function cache(cache_key = '', cache_expried) {
   return function(target, key, descriptor) {
     let method = descriptor.value;
     descriptor.value = async (arg = {}) => {
@@ -83,16 +83,14 @@ export function cache(cache_key = '', cache_expried) {
           case 1: {
             let res;
             arg.not_show_loading = true;
-            try {
-              res = await method.call(target[symbolContext], arg);
-              Cache.addData(_cache_key, res, cache_expried);
-            } catch (E) {
-              res = cache_data;
-            }
 
             return new Promise(resolve => {
-              console.log(res);
-              resolve(res);
+              resolve(cache_data);
+              method.call(target[symbolContext], arg).then(res => {
+                Cache.addData(_cache_key, res, cache_expried);
+                resolve(res);
+              });
+             
             });
           }
           case 2:
@@ -109,7 +107,7 @@ export function cache(cache_key = '', cache_expried) {
       return res;
     };
   };
-}
+} */
 
 function _cache(target, key, descriptor, cache_key = '', cache_expried) {
   let method = descriptor.value;

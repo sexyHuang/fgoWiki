@@ -25,8 +25,10 @@ const router = new Router({
       component: ServantList,
       beforeEnter: async (to, from, next) => {
         if (store.state.servant.list.length === 0) {
-          let list = await ServantApi.servantList();
-          store.commit('servant/setList', list);
+          ServantApi.servantList().then(list => {
+            store.commit('servant/setList', list);
+            console.log('done');
+          });
         }
 
         next();
@@ -52,6 +54,11 @@ const router = new Router({
       // which is lazy-loaded when the route is visited.
       component: () =>
         import(/* webpackChunkName: "about" */ './views/About.vue')
+    },
+    {
+      path: '/craftEssenceList',
+      name: 'craftEssenceList',
+      component: () => import('./views/CraftEssenceList.vue')
     }
   ]
 });

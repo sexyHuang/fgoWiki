@@ -52,4 +52,38 @@ export default {
 .van-image-preview {
   background: #000;
 }
+
+.van-collapse-item__content {
+  padding: 0 0 0 0.4rem;
+}
+.van-hairline--top-bottom::after {
+  border-width: 0;
+}
+.van-checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+.van-checkbox {
+  margin: 0.4em 0.6em;
+
+  .van-checkbox__icon {
+    display: none;
+  }
+  .van-checkbox__label {
+    margin: 0;
+    display: flex;
+    height: 1.6em;
+    line-height: 1;
+    align-items: center;
+    padding: 0 0.5em;
+    border: 1px solid var(--border-color);
+    color: var(--info-color);
+    border-radius: 0.2em;
+  }
+  .van-checkbox__icon--checked + .van-checkbox__label {
+    border-color: var(--select-color);
+    background: var(--select-color);
+    color: white;
+  }
+}
 </style>
