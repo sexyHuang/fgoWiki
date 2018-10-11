@@ -1,12 +1,19 @@
 <template>
   <div>
     <search-bar :searchObj="searchObj" @search="onSearch"></search-bar>
+    <van-list v-model="loading" :finished="finished" @load="onLoad" class="list">
+      <router-link :to="'/craftEssenceInfo/'+item.id" v-for="(item, index) in show_list" :key="item.imgPath" class="list-item__card" v-lazy:background-image="base+item.imgPath">
+        <van-loading type="spinner" class="loading" />
+      </router-link>
 
+    </van-list>
+    <div class="nothing" v-if="!show_list.length"></div>
   </div>
 </template>
 
 <script>
 import SearchBar from './../components/SearchBar';
+import { BASE_URL } from './../conf/image';
 import { mapState } from 'vuex';
 export default {
   name: 'craftEssenceList',
@@ -16,7 +23,10 @@ export default {
   data() {
     return {
       show_list: [],
-      page: 1
+      finished: false,
+      page: 1,
+      loading: false,
+      base: BASE_URL
     };
   },
   computed: {
@@ -79,11 +89,25 @@ export default {
   },
   methods: {
     onSearch(res) {
-      this.show_list = this.$store.getters['craftessence/getList']({
-        searchObj: res,
+      this.page = 1;
+      this._loadData(res);
+    },
+    onLoad() {
+      this.page += 1;
+      this._loadData();
+      this.loading = false;
+    },
+    _loadData(searchObj) {
+      let _obj = this.$store.getters['craftessence/getList']({
+        searchObj,
         page: this.page
       });
+      this.show_list = _obj.list;
+      this.finished = _obj.finished;
     }
+  },
+  created() {
+    this._loadData();
   },
   beforeRouteEnter(to, from, next) {
     // 在渲染该组件的对应路由被 confirm 前调用
@@ -98,4 +122,53 @@ export default {
 </script>
 
 <style scoped lang='scss'>
+.nothing {
+  width: 100%;
+  height: calc(100vh - 44px);
+  background: url('./../assets/nothing.jpg') center/auto 100% no-repeat;
+  position: absolute;
+  top: 44px;
+  &::before {
+    position: absolute;
+    width: 168px;
+    height: 168px;
+    padding-top: 16%;
+    top: -10px;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 16px;
+    content: '';
+    color: var(--info-color);
+    background: url('./../assets/dialog.png') center/100% no-repeat;
+  }
+}
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 50px 5px 10px;
+
+  &-item {
+    &__card {
+      font-size: 63px;
+      width: 1em;
+      height: 1.1em;
+      overflow: hidden;
+      margin: 5px;
+      background: center/100% no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .loading {
+        display: none;
+      }
+      &[lazy='loading'] {
+        background-color: #eee;
+        border-radius: 0.1em;
+        .loading {
+          display: block;
+        }
+      }
+    }
+  }
+}
 </style>

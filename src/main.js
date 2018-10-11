@@ -20,9 +20,12 @@ import {
   Radio,
   Tab,
   Tabs,
-  NavBar
+  NavBar,
+  List,
+  Loading
 } from 'vant';
 
+Vue.use(Loading);
 
 Vue.use(NavBar);
 Vue.use(VueLazyload);
@@ -38,11 +41,13 @@ Vue.use(Checkbox).use(CheckboxGroup);
 Vue.use(RadioGroup);
 Vue.use(Radio);
 Vue.use(Tab).use(Tabs);
+Vue.use(List);
+
 Vue.config.productionTip = false;
-Vue.prototype.$setTitle = function(text){
+Vue.prototype.$setTitle = function(text) {
   document.querySelector('title').innerHTML = text;
-  store.commit('setTitle',text);
-}
+  store.commit('setTitle', text);
+};
 Vue.filter('bgImage', function(value) {
   return `background-image:url(${value})`;
 });
