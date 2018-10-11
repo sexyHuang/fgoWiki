@@ -3,6 +3,7 @@ import Router from 'vue-router';
 //import Home from './views/Home.vue';
 import ServantList from './views/ServantList';
 import ServantApi from './api/imp/ServantApi';
+import CraftEssenceApi from './api/imp/CraftEssenceApi';
 import store from '@/store';
 Vue.use(Router);
 let routerStack = sessionStorage.getItem('routerStack')
@@ -58,7 +59,17 @@ const router = new Router({
     {
       path: '/craftEssenceList',
       name: 'craftEssenceList',
-      component: () => import('./views/CraftEssenceList.vue')
+      component: () => import('./views/CraftEssenceList.vue'),
+      beforeEnter: async (to, from, next) => {
+        if (store.state.servant.list.length === 0) {
+          CraftEssenceApi.list().then(res => {
+            store.commit('craftessence/setData', res);
+            console.log('done');
+          });
+        }
+
+        next();
+      }
     }
   ]
 });

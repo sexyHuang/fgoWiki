@@ -113,7 +113,7 @@ export default {
       for (let key of Object.keys(this.showOptions)) {
         let isBreak = false;
         let query = this.showOptions[key];
-        if (key === 'sreach' && query.trim() !== '') {
+        if (key === 'search' && query.trim() !== '') {
           query = new RegExp(query.trim(), 'i');
           let noSreach = true;
           for (let _key of sreachKeys) {
