@@ -117,6 +117,7 @@ export default {
         {
           title: '宝具',
           key: 'treasure',
+          match_keys: ['addition'],
           lists: [
             [
               {
@@ -138,6 +139,7 @@ export default {
         {
           title: '阵营&性别',
           key: 'party_sex',
+          match_keys: ['addition'],
           lists: [
             ['天', '地', '人', '星', '兽'],
             ['秩序', '混沌', '中立'],
@@ -148,6 +150,7 @@ export default {
         {
           title: '特性',
           key: 'r_addition',
+          match_keys: ['addition'],
           match_type: 'or',
           lists: [
             [
@@ -168,11 +171,27 @@ export default {
               '希腊神话系男性'
             ]
           ]
+        },
+        {
+          key: 'search',
+          match_keys: [
+            'cv',
+            'illust',
+            'name',
+            'name_en',
+            'name_jp',
+            'origin',
+            'region',
+            'sex'
+          ],
+          match_mode: 'like'
         }
       ],
-      Rarity: '',
-      search: '',
-      addition: []
+      rarity: null,
+      search: null,
+      r_addition: null,
+      party_sex: null,
+      treasure: null
     };
   },
   components: {
@@ -189,11 +208,14 @@ export default {
     },
     selectOptions() {
       let output = {
-        class: this.currentClass
+        class: { querys: [this.currentClass] }
       };
       if (this.search) output.search = this.search;
-      if (this.Rarity) output.rarity = this.Rarity;
-      if (this.addition.length > 0) output.addition = this.addition;
+      if (this.rarity) output.rarity = this.rarity;
+      if (this.r_addition) output.r_addition = this.r_addition;
+      if (this.party_sex) output.party_sex = this.party_sex;
+      if (this.treasure) output.party_sex = this.treasure;
+
       return output;
     }
   },
@@ -209,18 +231,16 @@ export default {
       if (this.isDesc) val = this.list.length - val;
       return val;
     },
-  
+
     setCurrentClass(select) {
       this.currentClass = select;
     },
     onSearch(res) {
       let { rarity, treasure, party_sex, r_addition, search } = res;
-      this.Rarity = rarity ? new RegExp(rarity[0]) : '';
-      let _add = [];
-      if (treasure) _add.push(...treasure);
-      if (party_sex) _add.push(...party_sex);
-      if (r_addition) _add.push(...r_addition);
-      this.addition = _add;
+      this.rarity = rarity;
+      this.treasure = treasure;
+      this.party_sex = party_sex;
+      this.r_addition = r_addition;
       this.search = search;
     }
   },

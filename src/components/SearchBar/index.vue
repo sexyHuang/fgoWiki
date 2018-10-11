@@ -6,28 +6,31 @@
         <slot name="before-add">
 
         </slot>
-        <van-collapse-item v-for="(item, index) in searchObj" :key="index*1+1" :title="item.title" :name="index">
-          <van-radio-group v-model="output[item.key].match_type" class="radio-group" v-if="item.match_type">
-            <van-radio name="or">任意匹配</van-radio>
-            <van-radio name="and">同时匹配</van-radio>
-          </van-radio-group>
-          <template v-for="(_item, _idx) in item.lists">
+        <template v-for="(item, index) in searchObj">
+          <van-collapse-item :key="index*1+1" :title="item.title" :name="index" v-if="item.key !== 'search'">
+            <van-radio-group v-model="output[item.key].match_type" class="radio-group" v-if="item.match_type">
+              <van-radio name="or">任意匹配</van-radio>
+              <van-radio name="and">同时匹配</van-radio>
+            </van-radio-group>
+            <template v-for="(_item, _idx) in item.lists">
 
-            <van-checkbox-group v-model="output[item.key].list[_idx]" :key="_idx">
-              <template v-for="(__item, __idx) in _item">
-                <!-- 简单模式 -->
-                <van-checkbox v-if="typeof __item === 'string'" :key="__item" :name="__item">
-                  {{ __item }}
-                </van-checkbox>
-                <!-- 对象模式 -->
-                <van-checkbox v-else :key="__item.name" :name="__item.name" :style="'--select-color:'+ __item['select-color']">
-                  {{__item.title||__item.name}}
-                </van-checkbox>
-              </template>
-              <div class="controllers-hr" v-if="_idx+1<item.lists.length" :key="'h'+_idx"> </div>
-            </van-checkbox-group>
-          </template>
-        </van-collapse-item>
+              <van-checkbox-group v-model="output[item.key].list[_idx]" :key="_idx">
+                <template v-for="(__item, __idx) in _item">
+                  <!-- 简单模式 -->
+                  <van-checkbox v-if="typeof __item === 'string'" :key="__item" :name="__item">
+                    {{ __item }}
+                  </van-checkbox>
+                  <!-- 对象模式 -->
+                  <van-checkbox v-else :key="__item.name" :name="__item.name" :style="'--select-color:'+ __item['select-color']">
+                    {{__item.title||__item.name}}
+                  </van-checkbox>
+                </template>
+                <div class="controllers-hr" v-if="_idx+1<item.lists.length" :key="'h'+_idx"> </div>
+              </van-checkbox-group>
+            </template>
+          </van-collapse-item>
+        </template>
+
         <template slot="before-after">
 
         </template>
@@ -49,6 +52,10 @@
 const MATCH_TYPE = {
   OR: 'or',
   AND: 'and'
+};
+const MATCH_MODE = {
+  EQUAL: 'equal',
+  LIKE: 'like'
 };
 export default {
   props: {
@@ -77,25 +84,37 @@ export default {
         _output.search = this.searchValue.trim();
       }
       for (let _key of Object.keys(this.output)) {
-        let _item = [];
         let _obj = this.output[_key];
-        let _mType = _obj.match_type;
-        _obj.list.map(__item => {
-          if (__item.join('|'))
-            switch (_mType) {
-              case MATCH_TYPE.OR: {
-                _item.push(__item.join('|'));
-                break;
+        let match_mode = _obj.match_mode || MATCH_MODE.EQUAL;
+        if (_key === 'search' && this.searchValue.trim()) {
+          _output.search = {
+            querys: [this.searchValue.trim()]
+          };
+        } else {
+          let _item = [];
+
+          let _mType = _obj.match_type;
+          _obj.list.map(__item => {
+            if (__item.join('|'))
+              switch (_mType) {
+                case MATCH_TYPE.OR: {
+                  _item.push(__item.join('|'));
+                  break;
+                }
+                case MATCH_TYPE.AND: {
+                  _item.push(...__item);
+                  break;
+                }
               }
-              case MATCH_TYPE.AND: {
-                _item.push(...__item);
-                break;
-              }
-            }
-        });
-        if (_item.length > 0) _output[_key] = _item;
+          });
+          if (_item.length > 0) _output[_key] = { querys: _item };
+        }
+        if (_output[_key]) {
+          _output[_key].match_mode = match_mode;
+          _output[_key].match_keys = _obj.match_keys;
+        }
       }
-      
+
       this.$emit('search', _output);
       this.show = false;
     }
@@ -106,7 +125,9 @@ export default {
     this.searchObj.map(item => {
       _output[item.key] = {
         match_type: item.match_type || MATCH_TYPE.OR,
-        list: new Array(item.lists.length).fill([])
+        list: new Array(item.lists ? item.lists.length : 1).fill([]),
+        match_keys: item.match_keys || [item.key],
+        match_mode: item.match_mode || MATCH_MODE.EQUAL
       };
     });
     this.output = _output;

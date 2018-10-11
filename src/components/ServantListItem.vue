@@ -12,6 +12,7 @@
 <script>
 import { BASE_URL } from './../conf/image';
 import { upperFirst } from 'lodash';
+import { search } from '@/common/common';
 export default {
   data() {
     return {
@@ -52,9 +53,6 @@ export default {
       let output = {
         order: this.order
       };
-      /*  if (this.loadedImgSrc) {
-        output['background-image'] = `url(${this.loadedImgSrc})`;
-      } */
       return output;
     },
     addition() {
@@ -98,73 +96,9 @@ export default {
       return output.join(', ');
     },
     isShow() {
-      let output = false;
-      let sreachKeys = [
-        'cv',
-        'illust',
-        'name',
-        'name_en',
-        'name_jp',
-        'origin',
-        'region',
-        'sex'
-      ];
-
-      for (let key of Object.keys(this.showOptions)) {
-        let isBreak = false;
-        let query = this.showOptions[key];
-        if (key === 'search' && query.trim() !== '') {
-          query = new RegExp(query.trim(), 'i');
-          let noSreach = true;
-          for (let _key of sreachKeys) {
-            let val = this.data[_key];
-            if (Array.isArray(val)) val = JSON.stringify(val);
-            if (query.test(val)) {
-              output = true;
-              noSreach = false;
-              break;
-            }
-          }
-          if (noSreach) {
-            output = false;
-            isBreak = true;
-          }
-        } else {
-          let _data = this.data[key];
-          let isArray = false;
-          if (Array.isArray(_data)) {
-            _data = JSON.stringify(_data);
-            isArray = true;
-          }
-
-          if (!Array.isArray(query)) {
-            query = [query];
-          }
-          for (let _query of query) {
-            if (typeof _query === 'string') {
-              _query = _query.trim();
-              if (!_query) continue;
-              if (isArray)
-                _query = _query
-                  .split('|')
-                  .map(val => `"${val}"`)
-                  .join('|');
-              _query = new RegExp(_query, 'i');
-            }
-            if (_query.test(_data)) {
-              output = true;
-            } else {
-              output = false;
-              isBreak = true;
-              break;
-            }
-          }
-        }
-
-        if (isBreak) break;
-      }
-      if (output) this.$emit('show');
-      return output;
+      let output =  search(this.data, this.showOptions);
+      if(output) this.$emit('show');
+      return output; 
     },
     unloadIconClass() {
       let classes = ['icon-Icon_Class'];

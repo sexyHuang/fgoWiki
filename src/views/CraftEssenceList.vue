@@ -15,9 +15,8 @@ export default {
   },
   data() {
     return {
-      star: '',
-      attr: [],
-      search: ''
+      show_list: [],
+      page: 1
     };
   },
   computed: {
@@ -60,36 +59,30 @@ export default {
         {
           title: '类型',
           key: 'types',
+          match_keys: ['attr'],
           lists: [this.types]
         },
         {
           title: '特性',
+          match_keys: ['attr'],
           key: 'attrs',
           match_type: 'or',
           lists: [this.attrs]
+        },
+        {
+          key: 'search',
+          match_keys: ['illust', 'name', 'nameJp'],
+          match_mode: 'like'
         }
       ];
-    },
-    selectOptions() {
-      let output = {};
-      if (this.search) output.search = this.search;
-      if (this.star) output.star = this.star;
-      if (this.attr.length > 0) output.attr = this.attr;
-      return output;
     }
   },
   methods: {
-    search(data) {
-      this.searchs = data;
-    },
     onSearch(res) {
-      let { star, attrs, types, search } = res;
-      this.star = star ? new RegExp(star[0]) : '';
-      let _add = [];
-      if (attrs) _add.push(...attrs);
-      if (types) _add.push(...types);
-      this.attr = _add;
-      this.search = search;
+      this.show_list = this.$store.getters['craftessence/getList']({
+        searchObj: res,
+        page: this.page
+      });
     }
   },
   beforeRouteEnter(to, from, next) {
