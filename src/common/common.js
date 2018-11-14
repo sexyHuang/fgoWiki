@@ -1,15 +1,14 @@
-
 /**
  * 过滤器
  * @param {*} data 目标数据
- * @param {*} searchObj 过滤条件 
+ * @param {*} searchObj 过滤条件
  */
 export const search = (data, searchObj) => {
   let output = false;
   for (let key of Object.keys(searchObj)) {
     let isBreak = false;
     let _obj = searchObj[key];
-    let _match_keys = _obj.match_keys||[key],
+    let _match_keys = _obj.match_keys || [key],
       _match_mode = _obj.match_mode,
       querys = _obj.querys;
     for (let _key of _match_keys) {
@@ -46,4 +45,8 @@ export const search = (data, searchObj) => {
     if (!output) break;
   }
   return output;
+};
+
+export const percentage = num => {
+  return num * 100 + '%';
 };

@@ -1,6 +1,10 @@
 import Api from '../Api';
 import { controller, get } from '../decorator/decorator';
-import { SERVANT_LIST, SERVANT_INFO } from '../config/url';
+import {
+  SERVANT_LIST,
+  SERVANT_INFO,
+  SERVANT_TREASURE_LIST
+} from '../config/url';
 import { Toast } from 'vant';
 
 @controller('')
@@ -44,8 +48,22 @@ class EventApi extends Api {
     });
   }
 
+  @get(SERVANT_TREASURE_LIST, true, {
+    cache_key: 'SERVANT_TREASURE_LIST'
+    //cache_expried: 2 * 24 * 60 * 60 * 1e3
+  })
+  async _servantListForTreasureCalc(params) {
+    params.abnormal = () => {};
+    return await this.common(params);
+  }
+
+  async servantListForTreasureCalc() {
+    return await this._servantListForTreasureCalc({
+      ignore_cache: 1
+    });
+  }
   @get(SERVANT_INFO, true, {
-    cache_expried: 10 * 60 * 1e3
+    cache_expried: 2 * 24 * 60 * 60 * 1e3
   })
   async _getInfo(params) {
     // params = Object.assign({ ignore_cache: 1 }, params);

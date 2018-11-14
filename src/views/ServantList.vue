@@ -3,10 +3,10 @@
     <search-bar :searchObj="searchObj" @search="onSearch">
       <template slot="before-add">
         <van-collapse-item title="显示" name="add_1">
-          <van-cell-group>
+          
             <van-switch-cell v-model="isCard" :title="mode" size="20px" />
             <van-switch-cell v-model="isDesc" :title="desc" size="20px" />
-          </van-cell-group>
+          
         </van-collapse-item>
       </template>
     </search-bar>
@@ -244,6 +244,7 @@ export default {
       this.search = search;
     }
   },
+  
   beforeRouteEnter(to, from, next) {
     // 在渲染该组件的对应路由被 confirm 前调用
     // 不！能！获取组件实例 `this`

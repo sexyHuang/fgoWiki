@@ -8,5 +8,7 @@ module.exports = {
       "libraryDirectory": "es",
       "style": true
     }]
-  ]
+  ],
+  "sourceMaps": true,
+  "retainLines": true
 }

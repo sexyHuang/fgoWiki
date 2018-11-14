@@ -1,6 +1,6 @@
 module.exports = {
   outputDir:'./../../../myGit/runoob/public/fgowiki',
-  baseUrl: '/fgowiki/',
+  baseUrl: '/',
   css: {
     loaderOptions: {
       // 给 sass-loader 传递选项

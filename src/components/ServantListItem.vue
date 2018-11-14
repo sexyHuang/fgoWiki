@@ -18,7 +18,7 @@ export default {
     return {
       rarityColor: ['', 'Bronze', 'Bronze', 'Silver', 'Gold', 'Gold'],
       loadedImgSrc: {
-        src: BASE_URL + this.data.imgPath,
+        src: BASE_URL + this.data.imgPath + '?imageMogr2/interlace/1',
         loading: require('./../assets/icons.png'),
         error: require('./../assets/icons.png')
       }
@@ -96,9 +96,9 @@ export default {
       return output.join(', ');
     },
     isShow() {
-      let output =  search(this.data, this.showOptions);
-      if(output) this.$emit('show');
-      return output; 
+      let output = search(this.data, this.showOptions);
+      if (output) this.$emit('show');
+      return output;
     },
     unloadIconClass() {
       let classes = ['icon-Icon_Class'];
@@ -113,12 +113,12 @@ export default {
     }
   },
   created() {
-    let image = new Image();
+   /*  let image = new Image();
     image.onload = () => {
       this.loadedImgSrc = image.src;
     };
 
-    image.src = BASE_URL + this.data.imgPath;
+    image.src = BASE_URL + this.data.imgPath; */
   }
 };
 </script>

@@ -14,10 +14,15 @@ const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition;
-    }
-    return { x: 0, y: 0 };
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (savedPosition) {
+          resolve(savedPosition);
+        }
+
+        resolve({ x: 0, y: 0 });
+      }, 0);
+    });
   },
   routes: [
     {
@@ -81,6 +86,26 @@ const router = new Router({
       path: '/craftEssenceInfo/:ID',
       name: 'craftEssenceInfo',
       component: () => import('./views/CraftEssenceInfo/index.vue')
+    },
+    {
+      path: '/treasureCalc',
+      name: 'treasureCalc',
+      component: () => import('./views/TreasureCalc'),
+      beforeEnter: async (to, from, next) => {
+        if (store.state.servant.list.length === 0) {
+          ServantApi.servantList().then(list => {
+            store.commit('servant/setList', list);
+            console.log('done');
+          });
+        }
+        if (store.state.servant.list4Treasure.length === 0) {
+          ServantApi.servantListForTreasureCalc().then(list => {
+            store.commit('servant/setList4Treasure', list);
+          });
+        }
+
+        next();
+      }
     }
   ]
 });
@@ -96,10 +121,11 @@ router.beforeEach(async (to, from, next) => {
 });
 
 router.afterEach((to, from) => {
-  store.commit('setShowTitle', true);
+  if (to.path !== from.path || !from.name) store.commit('setShowTitle', true);
 
   if (to.name === routerStack[routerStack.length - 1]) {
     // 后退
+    store.commit('setIsBack', true);
     routerStack.pop();
     // 因为前进时，发现是要访问已经缓存过的路由，则会销毁缓存重新创建
     // 所以后退时（重新创建的也会在后退那一步删掉），缓存列表中不一定还有to路由
@@ -109,6 +135,7 @@ router.afterEach((to, from) => {
     }
     removeFromAliveList(from.name);
   } else {
+    store.commit('setIsBack', false);
     // 前进
     if (from.name) routerStack.push(from.name);
     // 前进时，发现是要访问已经缓存过的路由，销毁缓存重新创建

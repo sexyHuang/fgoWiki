@@ -1,42 +1,46 @@
 <template>
   <div class="craft-essence">
-    <div class="craft-essence_title">{{data.name}}</div>
+    <div class="craft-essence_title">
+      <fake-row :text="data.name" />
+    </div>
     <div class="craft-essence_header">
-      <img :src="base+data.imgPath" alt="" class="craft-essence_avatar" @click="showPreview(previewPics)"/>
+      <img :src="icon" alt="" class="craft-essence_avatar" @click="showPreview(previewPics)" />
       <div class="row">
         <div class="col" data-title="画师">
-          {{data.illust}}
+          <fake-row :text="data.illust" />
         </div>
 
       </div>
       <div class="row">
         <div class="col" data-title="稀有度">
-          {{data.star}}星
+          <fake-row :text="data.star?data.star+'星':''" />
         </div>
         <div class="col" data-title="COST">
-          {{data.cost}}
+          <fake-row :text="data.cost" />
         </div>
       </div>
       <div class="row">
-        <div class="col" data-title="ATK">
-          {{data.lv1Atk}}/{{data.lvmaxAtk}}
-        </div>
-        <div class="col" data-title="HP">
-          {{data.lv1Hp}}/{{data.lvmaxHp}}
-        </div>
+
+        <fake-row class="col" data-title="ATK" :text="data.lv1Atk!==undefined?data.lv1Atk+'/'+data.lvmaxAtk:''" />
+
+        <fake-row class="col" data-title="HP" :text="data.lv1Hp!==undefined?data.lv1Hp+'/'+data.lvmaxHp:''" />
+
       </div>
     </div>
     <div class="craft-essence_main">
       <div class="row">
         <div class="col" data-title="技能">
-          <div class="row">{{data.skillE}}</div>
-          <div class="row">{{data.skillMaxE}}</div>
+
+          <fake-row class="row" :text="data.skillE" />
+
+          <fake-row class="row" :text="data.skillMaxE" />
+
         </div>
       </div>
       <div class="row">
-        <div class="col content" v-html="introFormate(data.intro)">
+        <fake-row class="col content" :text="introFormate(data.intro)" :rows="6">
 
-        </div>
+        </fake-row>
       </div>
     </div>
   </div>
@@ -45,8 +49,12 @@
 <script>
 import { BASE_URL } from '@/conf/image';
 import previewImage from '@/mixins/previewImage';
+import fakeRow from './fakeRow';
 export default {
   mixins: [previewImage],
+  components: {
+    fakeRow
+  },
   data() {
     return {
       base: BASE_URL
@@ -62,12 +70,17 @@ export default {
   },
   computed: {
     previewPics() {
-      return [this.base + this.data.pic];
+      return [this.base + this.data.pic + '?imageMogr2/interlace/1'];
+    },
+    icon() {
+      return this.data.imgPath
+        ? BASE_URL + this.data.imgPath + '?imageMogr2/interlace/1'
+        : '';
     }
   },
   methods: {
     introFormate(val) {
-      return val.replace(/^\s/, '').replace(/\s/g, '<br>');
+      return val.replace(/^\n/, '').replace(/\n/g, '<br>');
     }
   }
 };

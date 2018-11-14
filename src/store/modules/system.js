@@ -2,6 +2,7 @@ import Vue from 'vue';
 const state = {
   dTime: 0,
   aliveList: [],
+  isBack: false,
   showTitle: false,
   title: 'fgoWiki'
 };
@@ -20,6 +21,9 @@ const mutations = {
   },
   setTitle(state, text) {
     state.title = text;
+  },
+  setIsBack(state, flag) {
+    state.isBack = flag;
   }
 };
 const actions = {};

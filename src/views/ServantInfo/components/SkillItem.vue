@@ -97,6 +97,7 @@ export default {
   }
   &-icon {
     width: 54px;
+    height: 54px;
     position: absolute;
     left: 0;
     top: 0;
@@ -114,12 +115,12 @@ export default {
     color: var(--info-color);
     &__desc {
       line-height: 2em;
-     
     }
     &__data_ul {
       display: flex;
       justify-content: center;
       border: 1px solid var(--border-color);
+      
     }
     &__data_li {
       flex-grow: 1;
@@ -128,6 +129,9 @@ export default {
         border-right: 1px solid var(--border-color);
       }
       max-width: 10%;
+      &:only-child{
+        max-width: 100%;
+      }
     }
   }
 }

@@ -2,9 +2,11 @@ import { ImagePreview } from 'vant';
 let _not_goBack = false,
   instance = null;
 
+
 const mixin = {
   methods: {
     showPreview(picList) {
+    
       this.$router.push({
         query: {
           open: 1
@@ -16,6 +18,7 @@ const mixin = {
         onClose: () => {
           if (!_not_goBack) this.$router.go(-1);
           else _not_goBack = false;
+         
         }
       });
     }

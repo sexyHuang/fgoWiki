@@ -1,9 +1,14 @@
 <template>
-  <div id="app">
+  <div id="app" >
     <van-nav-bar v-show="showTitle" :title="$store.state.system.title" fixed :z-index='100'></van-nav-bar>
+    <!-- <transition :name="transitionName">
+ -->
     <keep-alive :include="$store.state.system.aliveList">
+
       <router-view :style="style" />
+
     </keep-alive>
+    <!-- </transition> -->
 
   </div>
 </template>
@@ -11,6 +16,7 @@
 export default {
   data() {
     return {
+      transitionName: 'slide-left',
       isWeixin:
         navigator.userAgent.toLowerCase().match(/MicroMessenger/i) ==
         'micromessenger'
@@ -19,17 +25,30 @@ export default {
   computed: {
     style() {
       return {
-        'margin-top': !this.showTitle ? 0 : '1.22667rem'
+        'padding-top': !this.showTitle ? 0 : '1.22667rem'
       };
     },
     showTitle() {
       return !this.isWeixin && this.$store.state.system.showTitle;
     }
+  },
+  watch: {
+    $route(to, from) {
+      this.transitionName = this.$store.state.system.isBack
+        ? 'slide-right'
+        : 'slide-left';
+    }
+  },
+  methods: {
+  
   }
 };
 </script>
 <style lang="scss">
 @import './scss/reset/_reset';
+[v-cloak] {
+  opacity: 0;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -56,9 +75,7 @@ export default {
 .van-collapse-item__content {
   padding: 0 0 0 0.4rem;
 }
-.van-hairline--top-bottom::after {
-  border-width: 0;
-}
+
 .van-checkbox-group {
   display: flex;
   flex-wrap: wrap;
@@ -85,5 +102,27 @@ export default {
     background: var(--select-color);
     color: white;
   }
+}
+.slide-right-enter-active,
+.slide-right-leave-active,
+.slide-left-enter-active,
+.slide-left-leave-active {
+  will-change: transform;
+  transition: transform 0.3s cubic-bezier(0.55, 0, 0.1, 1);
+  //position: absolute;
+  width: 100%;
+  left: 0;
+}
+.slide-right-enter {
+  transform: translateX(-100%);
+}
+.slide-right-leave-active {
+  transform: translateX(100%);
+}
+.slide-left-enter {
+  transform: translateX(100%);
+}
+.slide-left-leave-active {
+  transform: translateX(-100%);
 }
 </style>
