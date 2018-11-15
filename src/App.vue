@@ -1,6 +1,6 @@
 <template>
-  <div id="app" >
-    <van-nav-bar v-show="showTitle" :title="$store.state.system.title" fixed :z-index='100'></van-nav-bar>
+  <div id="app">
+    <van-nav-bar v-show="showTitle" :title="$store.state.system.title" fixed :z-index='100' :left-arrow="showGoBack" :left-text="goBackText" @click-left="goBack"></van-nav-bar>
     <!-- <transition :name="transitionName">
  -->
     <keep-alive :include="$store.state.system.aliveList">
@@ -16,10 +16,7 @@
 export default {
   data() {
     return {
-      transitionName: 'slide-left',
-      isWeixin:
-        navigator.userAgent.toLowerCase().match(/MicroMessenger/i) ==
-        'micromessenger'
+      transitionName: 'slide-left'
     };
   },
   computed: {
@@ -29,7 +26,15 @@ export default {
       };
     },
     showTitle() {
-      return !this.isWeixin && this.$store.state.system.showTitle;
+      return (
+        !this.$store.state.system.isWeixin && this.$store.state.system.showTitle
+      );
+    },
+    showGoBack() {
+      return this.$store.state.system.canGoBack;
+    },
+    goBackText() {
+      return this.showGoBack ? '' : '';
     }
   },
   watch: {
@@ -40,7 +45,9 @@ export default {
     }
   },
   methods: {
-  
+    goBack() {
+      this.$router.go(-1);
+    }
   }
 };
 </script>
@@ -57,7 +64,9 @@ export default {
   color: var(--main-color);
   font-size: 14px;
 }
-
+.van-nav-bar .van-icon {
+  color: var(--main-color);
+}
 #nav {
   padding: 30px;
   a {

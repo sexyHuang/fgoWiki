@@ -37,7 +37,7 @@
       </van-collapse>
       <van-button type="primary" block @click="onSearch">确定</van-button>
     </van-popup>
-    <div class="controllers">
+    <div :class="['controllers',{hasTitle}]">
       <form action="/" class="form">
         <van-search v-model="searchValue" placeholder="请输入搜索关键词" background="transparent" @search="onSearch" />
         <div class="btn-menu" @click="openMenu">
@@ -73,6 +73,13 @@ export default {
       searchValue: '',
       output: {}
     };
+  },
+  computed: {
+    hasTitle() {
+      return (
+        !this.$store.state.system.isWeixin && this.$store.state.system.showTitle
+      );
+    }
   },
   methods: {
     openMenu() {
@@ -162,6 +169,9 @@ export default {
   flex-shrink: 0;
   z-index: 10;
   background: var(--border-color);
+  &.hasTitle {
+    top: 1.22667rem;
+  }
   .form {
     display: flex;
     align-items: center;

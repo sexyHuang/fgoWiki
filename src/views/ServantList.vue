@@ -250,7 +250,7 @@ export default {
     // 不！能！获取组件实例 `this`
     // 因为当守卫执行前，组件实例还没被创建
     next(vm => {
-      vm.$store.commit('setShowTitle', false);
+      //vm.$store.commit('setShowTitle', false);
       vm.$setTitle('英灵列表');
     });
   }

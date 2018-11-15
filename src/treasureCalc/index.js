@@ -60,14 +60,13 @@ export default class treasureCalc {
     return this;
   }
 
-  setServantConfig({ treasure_lv, treasure_oc, skill_lvs, open_event } = {}) {
-    if (treasure_lv || treasure_oc || skill_lvs || open_event)
-      this[SERVANT_CONF] = {
-        treasure_lv,
-        treasure_oc,
-        skill_lvs,
-        open_event
-      };
+  setServantConfig(config = {}) {
+    let { treasure_lv, treasure_oc, skill_lvs, open_event } = config;
+
+    if (treasure_lv || treasure_oc || skill_lvs || open_event) {
+      this[SERVANT_CONF] || (this[SERVANT_CONF] = {});
+      Object.assign(this[SERVANT_CONF], config);
+    }
     return this;
   }
   calcFun() {

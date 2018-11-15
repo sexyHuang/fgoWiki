@@ -4,7 +4,11 @@ const state = {
   aliveList: [],
   isBack: false,
   showTitle: false,
-  title: 'fgoWiki'
+  title: 'fgoWiki',
+  isWeixin:
+    navigator.userAgent.toLowerCase().match(/MicroMessenger/i) ==
+    'micromessenger',
+  canGoBack: false
 };
 const getters = {};
 const mutations = {
@@ -12,7 +16,9 @@ const mutations = {
     let _now = new Date();
     state.dTime = _now - new Date(date);
   },
-
+  setCanGoBack(state, flag) {
+    state.canGoBack = flag;
+  },
   setAliveList(state, list) {
     state.aliveList = list;
   },

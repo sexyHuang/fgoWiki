@@ -147,6 +147,7 @@ router.afterEach((to, from) => {
       }, 0);
     }
   }
+  store.commit('setCanGoBack', routerStack.length > 0);
   store.commit('setAliveList', aliveList);
   sessionStorage.setItem('routerStack', JSON.stringify(routerStack));
 });

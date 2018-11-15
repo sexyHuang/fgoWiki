@@ -3,7 +3,7 @@
     <van-collapse v-model="activeName" accordion>
       <van-cell is-link @click="showEnemyPicker('enemy','敌对目标')" center class="main-cell">
         <div slot="title">敌对目标</div>
-        <img :src="img_base+enemy.imgPath" alt="" v-show="enemy.imgPath" class="avatar">
+        <img :src="img_base+enemy.imgPath+small_pic" alt="" v-if="enemy.imgPath" class="avatar">
 
         <span class="sub-text">
           {{enemy.name||'未选择'}}
@@ -38,7 +38,7 @@
         <div slot="title" class="collapse-title">
           <span class="main-text">从者设定<van-checkbox v-model="noSkill" @click.native.stop>不开技能</van-checkbox></span>
           <span>
-            <img :src="img_base+servant.imgPath" alt="" v-show="servant.imgPath" class="avatar">
+            <img :src="img_base+servant.imgPath+small_pic" alt="" v-if="servant.imgPath" class="avatar">
             <span class="sub-text">{{servant_setting_abstract}}</span>
           </span>
 
@@ -61,7 +61,7 @@
           </van-cell>
           <van-cell is-link @click="showServantPicker('servant','从者')" center class="main-cell">
             <div slot="title">从者</div>
-            <img :src="img_base+servant.imgPath" alt="" v-show="servant.imgPath" class="avatar">
+            <img :src="img_base+servant.imgPath+small_pic" alt="" v-if="servant.imgPath" class="avatar">
 
             <span class="sub-text">
               {{servant.name||'未选择'}}
@@ -69,21 +69,37 @@
           </van-cell>
         </template>
         <template v-else>
-          BBBB
+          <van-cell is-link title="4星-宝具等级" @click="showNormalPicker('servant_setting.sr_treasure_lv',lvs,'宝具等级')">
+            <span class="sub-text">{{servant_setting.sr_treasure_lv}}宝</span>
+          </van-cell>
+          <van-cell is-link title="5星-宝具等级" @click="showNormalPicker('servant_setting.ssr_treasure_lv',lvs,'宝具等级')">
+            <span class="sub-text">{{servant_setting.ssr_treasure_lv}}宝</span>
+          </van-cell>
+          <van-cell is-link title="OC" @click="showNormalPicker('servant_setting.treasure_oc',lvs,'宝具OC')">
+            <span class="sub-text">{{servant_setting.treasure_oc}}00%</span>
+          </van-cell>
+          <van-cell title="技能等级">
+            <van-radio-group v-model="servant_setting.skill_mode">
+              <van-radio name="1">310</van-radio>
+            </van-radio-group>
+          </van-cell>
+          <van-cell title="3星&活动英灵5宝"></van-cell>
         </template>
       </van-collapse-item>
     </van-collapse>
 
     <van-button block type="primary" @click="calc">计算</van-button>
     <van-collapse v-model="dactiveName" accordion>
-      <van-radio-group v-model="effectType" v-show="damage_list.length>0&&!appoint_servant">
-        <van-radio name="1">光炮</van-radio>
-        <van-radio name="2">单体</van-radio>
-      </van-radio-group>
+      <van-cell v-show="damage_list.length>0&&!appoint_servant">
+        <van-radio-group v-model="effectType">
+          <van-radio name="1">光炮</van-radio>
+          <van-radio name="2">单体</van-radio>
+        </van-radio-group>
+      </van-cell>
       <van-collapse-item v-for="({servant,damage,buffs,treaEffect}, index) in damage_list" :key="index" :name="index" v-show="appoint_servant||effectType == treaEffect">
         <div slot="title" class="collapse-title">
           <span>
-            <img :src="img_base+servant.imgPath" alt="" v-show="servant.imgPath" class="avatar">
+            <img :src="img_base+servant.imgPath+small_pic" alt="" v-show="servant.imgPath" class="avatar">
             {{damage.min}}~{{damage.max}} 平均伤害：{{damage.avg}}
           </span>
 
@@ -166,6 +182,7 @@ export default {
         target: ''
       },
       custom_mode: false,
+      small_pic: '?imageView2/0/w/48',
       skill_default: [1, 1, 1],
       skill_options: new Array(3).fill(1).map((val, _idx) => {
         return {
@@ -197,7 +214,11 @@ export default {
       servant_setting: {
         treasure_lv: 1,
         skill_lvs: [1, 1, 1],
-        treasure_oc: 1
+        treasure_oc: 1,
+        sr_treasure_lv: 1,
+        ssr_treasure_lv: 1,
+        else_treasure_lv: 5,
+        skill_mode: '1'
       },
       servant: {},
       extra_buffs: {
@@ -239,16 +260,39 @@ export default {
       damage_list: []
     };
   },
+  beforeRouteEnter(to, from, next) {
+    // 在渲染该组件的对应路由被 confirm 前调用
+    // 不！能！获取组件实例 `this`
+    // 因为当守卫执行前，组件实例还没被创建
+    next(vm => {
+     // vm.$store.commit('setShowTitle', false);
+      vm.$setTitle('宝具伤害计算');
+    });
+  },
   computed: {
     ...mapState('servant', {
       servant_list: state => state.list,
       servant_treasure_list: state => state.list4Treasure
     }),
     servant_setting_abstract() {
-      let { treasure_lv, treasure_oc, skill_lvs } = this.servant_setting;
-      return `${treasure_lv}宝 ${
-        this.noSkill ? '' : skill_lvs.join('/')
-      } OC${treasure_oc}`;
+      if (this.appoint_servant) {
+        let { treasure_lv, treasure_oc, skill_lvs } = this.servant_setting;
+        return `${treasure_lv}宝 ${
+          this.noSkill ? '' : skill_lvs.join('/')
+        } OC${treasure_oc}`;
+      }
+      let {
+        sr_treasure_lv,
+        ssr_treasure_lv,
+        treasure_oc,
+        skill_mode
+      } = this.servant_setting;
+      let skill_mode_text = {
+        1: '310'
+      };
+      return `四星${sr_treasure_lv}宝 五星${ssr_treasure_lv}宝 OC${treasure_oc} ${
+        skill_mode_text[skill_mode]
+      }`;
     },
     support_abstract() {
       let list = this.extra_buffs.support;
@@ -357,9 +401,26 @@ export default {
         this.damage_list = [res];
         this.dactiveName = 0;
       } else {
-        let _output = this.servant_treasure_list.map(val =>
-          treaCalcObj.calcFun()(val, {})
-        );
+        let _output = this.servant_treasure_list.map(val => {
+          let treasure_lv,
+            skill_lvs = {
+              1: [10, 10, 10]
+            };
+          let rarity_map = {
+            4: 'sr_treasure_lv',
+            5: 'ssr_treasure_lv'
+          };
+          if (val.getWay === 1 || val.rarity - 4 < 0)
+            treasure_lv = this.servant_setting.else_treasure_lv;
+          else treasure_lv = this.servant_setting[rarity_map[val.rarity]];
+          skill_lvs = this.noSkill
+            ? [0, 0, 0]
+            : skill_lvs[this.servant_setting.skill_mode];
+
+          return treaCalcObj
+            .setServantConfig({ treasure_lv, skill_lvs })
+            .calcFun()(val, {});
+        });
         _output.sort((a, b) => b.damage.avg - a.damage.avg);
         this.damage_list = _output;
 
@@ -521,7 +582,6 @@ export default {
 .van-radio-group {
   display: flex;
   justify-content: flex-end;
-  padding: 0.5em;
 }
 .van-radio {
   line-height: 2em;
