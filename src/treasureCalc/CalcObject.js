@@ -2,7 +2,7 @@
  * @Author: Sexy
  * @Date: 2018-10-23 13:40:24
  * @LastEditors: Sexy
- * @LastEditTime: 2018-11-14 18:06:41
+ * @LastEditTime: 2018-11-16 17:53:03
  * @Description: file content
  */
 import {
@@ -96,8 +96,7 @@ export function getConfig({
     }) */
     .map(({ effect, type, idx }, _idx) => {
       if (skill_lvs[idx] === 0) return { effect, type, idx };
-      let __skill_lv_idx =
-        type == 1 && skill_lvs[_idx] ? skill_lvs[_idx] - 1 : 0;
+      let __skill_lv_idx = type == 1 && skill_lvs[idx] ? skill_lvs[idx] - 1 : 0;
       for (let _key of Object.keys(effect)) {
         let _item = effect[_key];
 
@@ -246,3 +245,5 @@ export function treasureDamage({
     )
   };
 }
+
+

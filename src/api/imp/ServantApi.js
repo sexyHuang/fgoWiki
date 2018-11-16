@@ -3,7 +3,8 @@ import { controller, get } from '../decorator/decorator';
 import {
   SERVANT_LIST,
   SERVANT_INFO,
-  SERVANT_TREASURE_LIST
+  SERVANT_TREASURE_LIST,
+  SERVANT_MATERIAL_NEEDS
 } from '../config/url';
 import { Toast } from 'vant';
 
@@ -62,6 +63,7 @@ class EventApi extends Api {
       ignore_cache: 1
     });
   }
+
   @get(SERVANT_INFO, true, {
     cache_expried: 2 * 24 * 60 * 60 * 1e3
   })
@@ -72,6 +74,20 @@ class EventApi extends Api {
   }
   async info(id) {
     return await this._getInfo({
+      data: {
+        id
+      }
+    });
+  }
+  
+  @get(SERVANT_INFO, true)
+  async _getMaterialNeeds(params) {
+    params.abnormal = () => {};
+    return await this.common(params);
+  }
+
+  materialNeeds(id) {
+    return this._getMaterialNeeds({
       data: {
         id
       }
