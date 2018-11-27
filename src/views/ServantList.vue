@@ -1,25 +1,29 @@
 <template>
   <div class="servant-list-page">
+
     <search-bar :searchObj="searchObj" @search="onSearch">
       <template slot="before-add">
         <van-collapse-item title="显示" name="add_1">
-          
-            <van-switch-cell v-model="isCard" :title="mode" size="20px" />
-            <van-switch-cell v-model="isDesc" :title="desc" size="20px" />
-          
+
+          <van-switch-cell v-model="isCard" :title="mode" size="20px" />
+          <van-switch-cell v-model="isDesc" :title="desc" size="20px" />
+
         </van-collapse-item>
+      </template>
+      <template slot="controller-right">
+        <van-button tag="div" size="mini" type="primary" class="controllers-btn" @click="toggleShowType">{{showType[activeShowIdx]}}</van-button>
       </template>
     </search-bar>
     <div class="servant-list">
 
-      <servant-list-item v-for="item in list" :key="item.id" :data="item" :isCard="isCard" :order="setOrder(item.id)" :showOptions="selectOptions" @show="nothing = false"></servant-list-item>
+      <servant-list-item v-for="item in list" :editMode="!!activeMode" :key="item.id" :data="item" :isCard="isCard" :showType="activeShowIdx" :order="setOrder(item.id)" :showOptions="selectOptions" @show="nothing = false"></servant-list-item>
 
       <div class="nothing" v-if="nothing"></div>
     </div>
     <div class="tab">
       <div :class="['tab-li',{'active': item.select.toString() == currentClass.toString()}]" v-for="(item, index) in classes" :key="index" @click="setCurrentClass(item.select)" :style="'width:'+ (100/classes.length).toFixed(2)+'%'">{{item.text}}</div>
     </div>
-
+    <div class="float-btn" @click="toggleMode" >{{modeText[activeMode]}}</div>
   </div>
 
 </template>
@@ -191,7 +195,11 @@ export default {
       search: null,
       r_addition: null,
       party_sex: null,
-      treasure: null
+      treasure: null,
+      showType: ['全部', '已关注', '未关注'],
+      activeShowIdx: 0,
+      activeMode: 0,
+      modeText: ['批量关注', '保存']
     };
   },
   components: {
@@ -222,6 +230,9 @@ export default {
   watch: {
     selectOptions() {
       this.nothing = true;
+    },
+    activeShowIdx() {
+      this.nothing = true;
     }
   },
 
@@ -242,9 +253,15 @@ export default {
       this.party_sex = party_sex;
       this.r_addition = r_addition;
       this.search = search;
+    },
+    toggleShowType() {
+      this.activeShowIdx = (this.activeShowIdx + 1) % 3;
+    },
+    toggleMode() {
+      this.activeMode = (this.activeMode + 1) % 2;
     }
   },
-  
+
   beforeRouteEnter(to, from, next) {
     // 在渲染该组件的对应路由被 confirm 前调用
     // 不！能！获取组件实例 `this`
@@ -308,6 +325,7 @@ export default {
   bottom: 0;
   left: 0;
   flex-shrink: 0;
+  z-index: 1;
   width: 100%;
   background: white;
   display: flex;
@@ -343,6 +361,10 @@ export default {
     margin: 0 0 0 0.6em;
     background: var(--border-color);
   }
+  &-btn {
+    margin-right: 0.4rem;
+    //background: none;
+  }
 }
 .radio-group {
   display: flex;
@@ -355,5 +377,18 @@ export default {
   line-height: 1;
   display: flex;
   align-items: center;
+}
+.float-btn {
+  position: fixed;
+  bottom: 1.4rem;
+  left: 0;
+  background: white;
+  padding: 0.2em;
+  border-radius: 0 0.2em 0.2em 0;
+  border: 1px solid currentColor;
+  font-size: 0.8em;
+  border-left-width: 0;
+  color: #4b0;
+  //opacity: 0.7;
 }
 </style>

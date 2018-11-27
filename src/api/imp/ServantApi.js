@@ -79,8 +79,10 @@ class EventApi extends Api {
       }
     });
   }
-  
-  @get(SERVANT_INFO, true)
+
+  @get(SERVANT_MATERIAL_NEEDS, true, {
+    cache_expried: 0
+  })
   async _getMaterialNeeds(params) {
     params.abnormal = () => {};
     return await this.common(params);

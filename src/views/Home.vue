@@ -3,6 +3,7 @@
     <router-link to="/servantList">英灵列表</router-link>
     <router-link to="/craftEssenceList">礼装列表</router-link>
     <router-link to="/treasureCalc">宝具伤害</router-link>
+    <router-link to="/materialList">素材列表</router-link>
   </div>
 </template>
 

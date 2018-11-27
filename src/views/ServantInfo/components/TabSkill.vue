@@ -1,11 +1,12 @@
 <template>
   <div class="skill-tab">
     <div class="skills">
-      <skill-item v-for="(item, index) in data.skill" :key="index" :data="item"></skill-item>
+      <skill-item v-for="(item, index) in data.skill" :key="index" :data="item" v-model="value_copy[index]" @input="handleInput" @clickIcon="clickSkillIcon"></skill-item>
     </div>
     <div class="passive-skills">
       <passive-skill-item v-for="(item, index) in data.passiveSkill" :key="index" :data="item"></passive-skill-item>
     </div>
+
   </div>
 </template>
 
@@ -16,7 +17,8 @@ import PassiveSkillItem from './PassiveSkillItem';
 export default {
   data() {
     return {
-      imgBase: BASE_URL
+      imgBase: BASE_URL,
+      value_copy: []
     };
   },
   components: {
@@ -32,6 +34,23 @@ export default {
           passiveSkill: []
         };
       }
+    },
+    value: {
+      type: Array,
+      default() {
+        return [1, 1, 1];
+      }
+    }
+  },
+  created() {
+    this.value_copy = this.value.slice();
+  },
+  methods: {
+    clickSkillIcon(ev) {
+      this.$emit('clickSkillIcon', ev);
+    },
+    handleInput(val) {
+      this.$emit('input', this.value_copy);
     }
   }
 };

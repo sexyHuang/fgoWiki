@@ -134,4 +134,19 @@ export default {
 .slide-left-leave-active {
   transform: translateX(-100%);
 }
+.dialog {
+  text-align: center;
+}
+
+@font-face {
+  font-family: 'custom-iconfont';
+  src: url('./assets/iconfont.ttf') format('truetype');
+}
+.van-icon {
+  font-family: 'vant-icon', 'custom-iconfont' !important;
+}
+
+.van-icon-reset:before {
+  content: '\e612';
+}
 </style>

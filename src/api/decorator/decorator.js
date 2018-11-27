@@ -1,4 +1,4 @@
-import Cache from './../cache/Cache';
+import Cache from './cache';
 export const symbolPrefix = Symbol('prefix');
 export const symbolContext = Symbol('context');
 export function controller(path) {

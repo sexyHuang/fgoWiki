@@ -1,10 +1,14 @@
 <template>
 
-  <div :class="['servant-list-item',{card: isCard},{show: isShow}]" :style="style" @click="jumpToInfo">
+  <div :class="['servant-list-item',{card: isCard},{show: isShow},{following: isFollowing}]" :style="style" @click="clickHandler">
+    <div class="following-icon" v-show="isFollowing&&isCard">
+      <van-icon name="checked" color="#4b0" size="1.2em" />
+    </div>
+
     <div :class="[unloadIconClass,'unload-icon']" v-lazy:background-image="loadedImgSrc"></div>
     <div class="main">{{data.name}}</div>
     <div class="sub">{{addition}}</div>
-    <van-icon name="arrow" class="icon" />
+    <van-icon name="arrow" class="icon" v-show="! editMode" />
   </div>
 
 </template>
@@ -13,6 +17,7 @@
 import { BASE_URL } from './../conf/image';
 import { upperFirst } from 'lodash';
 import { search } from '@/common/common';
+import { mapMutations } from 'vuex';
 export default {
   data() {
     return {
@@ -46,6 +51,14 @@ export default {
       default() {
         return {};
       }
+    },
+    showType: {
+      type: Number,
+      default: 0
+    },
+    editMode: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -54,6 +67,9 @@ export default {
         order: this.order
       };
       return output;
+    },
+    isFollowing() {
+      return this.$store.state.userData.servant_map[this.data.id];
     },
     addition() {
       let sexs = ['男性', '女性', '？', '男性&女性'],
@@ -96,7 +112,11 @@ export default {
       return output.join(', ');
     },
     isShow() {
-      let output = search(this.data, this.showOptions);
+      let showType =
+        this.showType === 0 ||
+        (this.showType === 1 && this.isFollowing) ||
+        (this.showType === 2 && !this.isFollowing);
+      let output = showType && search(this.data, this.showOptions);
       if (output) this.$emit('show');
       return output;
     },
@@ -108,12 +128,30 @@ export default {
     }
   },
   methods: {
+    clickHandler() {
+      this.editMode ? this.toggleFollow() : this.jumpToInfo();
+    },
     jumpToInfo() {
       this.$router.push(`/servantInfo/${this.data.id}`);
-    }
+    },
+    async toggleFollow() {
+      if (!this.isFollowing)
+        this.addServantSetting({ servantID: this.data.id });
+      else {
+        try {
+          await this.$dialog.confirm({
+            title: '提示',
+            message: '取消关注会清除练度数据，<br>确定要取消关注？',
+            className: 'dialog'
+          });
+          this.removeServantSetting(this.data.id);
+        } catch (e) {}
+      }
+    },
+    ...mapMutations('userData', ['addServantSetting', 'removeServantSetting'])
   },
   created() {
-   /*  let image = new Image();
+    /*  let image = new Image();
     image.onload = () => {
       this.loadedImgSrc = image.src;
     };
@@ -197,6 +235,19 @@ export default {
       transform: translate3d(-50%, -50%, 0) scale(0.86);
       transform-origin: center;
     }
+  }
+  &:not(.card).following {
+    color: #4b0;
+  }
+  .following-icon {
+    position: absolute;
+    right: 0.2em;
+    top: 0.2em;
+    z-index: 1;
+    width: 1.2em;
+    height: 1.2em;
+    background: white;
+    border-radius: 100%;
   }
 }
 </style>

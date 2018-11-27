@@ -1,7 +1,7 @@
 <template>
   <div class="skill-item">
     <div class="skill-item-header">
-      <img :src="skillIcon" alt="" class="skill-item-icon">
+      <img :src="skillIcon" alt="" class="skill-item-icon" @click="$emit('clickIcon',skill)">
       <div class="skill-item-name">
         {{skill.skillName}}{{skill.rank?'['+skill.rank+'] ':' '}}(CD:<span>{{skill.cd}}</span>)
 
@@ -14,13 +14,22 @@
         <div class="skill-item-effect__desc">{{item}}</div>
         <ul class="skill-item-effect__data_ul">
           <template v-for="(_item, _index) in lv">
-            <li class="skill-item-effect__data_li" :key="_index" v-if="_index==0||!(_item[index] == lv[0][index]&&_item[index] == lv[9][index])">
+            <li :class="['skill-item-effect__data_li',{
+              active: value === _index + 1||(_item[index] == lv[0][index]&&_item[index] == lv[9][index])
+            }]" :key="_index" v-if="_index==0||!(_item[index] == lv[0][index]&&_item[index] == lv[9][index])" @click="clickLv(_index)">
               <div :class="{'smaller-text':_item[index].length>4}">{{_item[index]}}</div>
             </li>
           </template>
 
         </ul>
       </div>
+      <div class="slider-cout">
+        技能等级
+        <van-slider v-model="sliderVal" :step="10" :min="10" @change="slideChange"></van-slider>{{value}}
+
+      </div>
+      </van-cell>
+
     </div>
   </div>
 </template>
@@ -30,7 +39,8 @@ import { BASE_URL } from '@/conf/image';
 export default {
   data() {
     return {
-      isNew: true
+      isNew: true,
+      sliderVal: 0
     };
   },
   computed: {
@@ -51,6 +61,12 @@ export default {
   methods: {
     changeNew() {
       this.isNew = !this.isNew;
+    },
+    slideChange(val) {
+      this.$emit('input', val / 10);
+    },
+    clickLv(idx) {
+      this.$emit('input', idx + 1);
     }
   },
   props: {
@@ -59,6 +75,15 @@ export default {
       default() {
         return [];
       }
+    },
+    value: {
+      type: Number,
+      default: 1
+    }
+  },
+  watch: {
+    value(val) {
+      this.sliderVal = val * 10;
     }
   }
 };
@@ -120,19 +145,39 @@ export default {
       display: flex;
       justify-content: center;
       border: 1px solid var(--border-color);
-      
     }
     &__data_li {
       flex-grow: 1;
       text-align: center;
+      cursor: pointer;
       &:not(:last-of-type) {
         border-right: 1px solid var(--border-color);
       }
       max-width: 10%;
-      &:only-child{
+      &:only-child {
         max-width: 100%;
+      }
+      &.active {
+        color: #fab70d;
+        pointer-events: none;
       }
     }
   }
 }
+.slider-cout {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  padding-right: 10px;
+  .van-slider {
+    flex-grow: 1;
+    margin: 0 10px;
+  }
+}
+</style>
+<style lang="scss">
+  .van-slider__bar {
+    background: #fab70d;
+  }
 </style>

@@ -5,15 +5,30 @@
       <div class="servant-info-base">
         <div class="servant-info-base_row">{{atk}}</div>
         <div class="servant-info-base_row">{{hp}}</div>
+        <div class="servant-info-base_row" style="align-self: flex-end;-webkit-align-self: flex-end;">
+          <span>灵基：</span>
+          <my-rate v-model="servantSetting.state" :count="4" />
+          <div class="reset-btn" @click="servantSetting.state = 0">
+            <van-icon name="reset" size="1.2em" color="#4b0"></van-icon>
+          </div>
+        </div>
+      </div>
+      <div class="servant-info-right">
+        <div class="follow-btn" @click="toggleFollow">
+          <van-icon name="checked" size="2em" :color="isFollowing?'#4b0':'#ccc'"></van-icon>
+        </div>
       </div>
     </div>
     <van-tabs v-model="active" swipeable>
       <van-tab v-for="(item,index) in tabs" :title="item.title" :key="index">
-        <component :is="item.tabName" :data="item.data">
+        <component :is="item.tabName" :data="item.data" v-model="servantSetting.lvs" @clickSkillIcon="showMaterialList">
 
         </component>
       </van-tab>
     </van-tabs>
+    <van-popup v-model="show">
+      <material-list :data="MaterialList"></material-list>
+    </van-popup>
   </div>
 </template>
 
@@ -21,7 +36,10 @@
 import ServantApi from './../../api/imp/ServantApi';
 import { getServantImages, BASE_URL } from './../../conf/image';
 import { upperFirst } from 'lodash';
+import MyRate from '@/components/MyRate';
 import previewImage from './../../mixins/previewImage';
+import MaterialList from './components/MaterialList';
+import { mapMutations } from 'vuex';
 let start = {
   X: -1,
   Y: -1
@@ -34,12 +52,16 @@ export default {
   components: {
     TabCraftEssence: () => import('@/components/CraftEssence.vue'),
     TabSkill: () => import('./components/TabSkill.vue'),
-    TabTreasures: () => import('./components/TabTreasures.vue')
+    TabTreasures: () => import('./components/TabTreasures.vue'),
+    MaterialList,
+    MyRate
   },
   data() {
     return {
       info: {},
+      show: false,
       active: 0,
+      MaterialList: [],
       headHeight: '2.88rem',
       translateY: 0,
       transition: 'none',
@@ -53,6 +75,11 @@ export default {
         craftEssence: {
           title: '礼装'
         }
+      },
+      servantSetting: {
+        lvs: [1, 1, 1],
+        getCloth: false,
+        state: 0
       }
     };
   },
@@ -67,7 +94,11 @@ export default {
       return `HP：${this.info.maxHp || ''}`;
     },
     previewPics() {
-      let keys = ['A', 'B', 'C', 'D', 'fool'];
+      let keys = ['A', 'B', 'C', 'D'];
+      if (this.info.hasFool) keys.push('fool');
+      if (this.info.id === '001') keys.push('E');
+      if (this.info.clothFlag === 'Y') keys.push('Z');
+
       let output = [];
       for (let _key of Object.keys(this.pics)) {
         if (keys.includes(_key))
@@ -101,6 +132,9 @@ export default {
           : '',
         transition: this.transition
       };
+    },
+    isFollowing() {
+      return this.$store.state.userData.servant_map[this.info.id];
     }
   },
   /*  async created() {
@@ -113,7 +147,6 @@ export default {
     // 因为当守卫执行前，组件实例还没被创建
     next(async vm => {
       vm.info = await ServantApi.info(vm.$route.params.ID);
-
       vm.$setTitle(vm.info.name);
     });
   },
@@ -159,7 +192,23 @@ export default {
         X: -1,
         Y: -1
       };
-    }
+    },
+    async showMaterialList() {
+      try {
+        this.MaterialList = await ServantApi.materialNeeds(this.info.id);
+        this.show = true;
+      } catch (e) {}
+    },
+    toggleFollow() {
+      let noticeText = '已设置关注',
+        servantID = this.info.id;
+      if (this.isFollowing) {
+        this.removeServantSetting(servantID);
+        noticeText = '已取消关注';
+      } else this.addServantSetting({ servantID });
+      this.$toast.success({ message: noticeText, duration: 1500 });
+    },
+    ...mapMutations('userData', ['addServantSetting', 'removeServantSetting'])
   }
   /*  methods: {
     showPreview(picList) {
@@ -210,6 +259,9 @@ export default {
 </style>
 
 <style scoped lang="scss">
+.van-popup {
+  border-radius: 0.5em;
+}
 .servant-info {
   // background: var(--bg-image) center top 10%/100% auto no-repeat;
   &-header {
@@ -227,6 +279,34 @@ export default {
   }
   &-base {
     padding: 4px 0 4px 8px;
+    display: flex;
+    height: 88px;
+    flex-wrap: wrap;
+
+    &_row {
+      display: flex;
+
+      height: 1.2em;
+      width: 100%;
+    }
   }
+}
+/* .van-rate {
+  height: 1.3em;
+} */
+.reset-btn {
+  text-shadow: none;
+  display: flex;
+  align-items: center;
+  margin-left: 0.4em;
+
+  line-height: 1;
+  margin-top: -0.2em;
+  background: radial-gradient(circle at center, #fff 50%, transparent 50%);
+}
+.follow-btn {
+  background: radial-gradient(circle at center, #fff 50%, transparent 50%);
+  text-shadow: none;
+  line-height: 1;
 }
 </style>

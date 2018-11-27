@@ -30,7 +30,10 @@ import {
   PullRefresh,
   Cell,
   CellGroup,
-  Slider
+  Slider,
+  Dialog,
+  SwipeCell,
+  Rate
 } from 'vant';
 
 Vue.use(Loading);
@@ -57,7 +60,9 @@ Vue.use(Tab).use(Tabs);
 Vue.use(List);
 Vue.use(Picker);
 Vue.use(Slider);
-
+Vue.use(Dialog);
+Vue.use(SwipeCell);
+Vue.use(Rate);
 Vue.config.productionTip = false;
 Vue.prototype.$setTitle = function(text) {
   document.querySelector('title').innerHTML = text;

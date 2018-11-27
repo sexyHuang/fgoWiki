@@ -39,7 +39,9 @@
     </van-popup>
     <div :class="['controllers',{hasTitle}]">
       <form action="/" class="form">
+        <slot name="controller-left"></slot>
         <van-search v-model="searchValue" placeholder="请输入搜索关键词" background="transparent" @search="onSearch" />
+         <slot name="controller-right"></slot>
         <div class="btn-menu" @click="openMenu">
           <van-icon name="wap-nav" />
         </div>
