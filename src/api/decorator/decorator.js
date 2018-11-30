@@ -130,7 +130,7 @@ function _cache(target, key, descriptor, cache_key = '', cache_expried) {
           }
 
           return new Promise(resolve => {
-            console.log(res);
+           
             resolve(res);
           });
         }

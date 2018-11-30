@@ -12,11 +12,18 @@ const state = {
   material_map: Cache.getData('material_map') || {},
   material_calc_result: {}
 };
-const getters = {};
+const getters = {
+  getServantSettingById: state => servantID => {
+    return state.servant_map[servantID];
+  }
+};
 const mutations = {
   addServantSetting(state, { servantID, data }) {
     data = data || JSON.parse(DEFUALT_SERVANT_SETTING);
-    Vue.set(state.servant_map, servantID, data);
+    // Vue.set(state.servant_map, servantID, data);
+    state.servant_map = Object.assign({}, state.servant_map, {
+      [servantID]: data
+    });
     Cache.addData('servant_map', state.servant_map, 0, false);
   },
   initServantMap(state, data) {
@@ -47,8 +54,8 @@ const actions = {
     if (typeof dCount !== 'number') return;
     state.material_map[materialID] ||
       commit('addMaterialSetting', { materialID, count: 0 });
-    let now_count = state.material_calc_result[materialID];
-    Vue.set(state.material_calc_result, materialID, now_count + dCount);
+    let now_count = state.material_map[materialID];
+    Vue.set(state.material_map, materialID, now_count + dCount);
   },
   materialsCalc({ dispatch, state }, materialCalcSettings) {
     state.material_calc_result = {};

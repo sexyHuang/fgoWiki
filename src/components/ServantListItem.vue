@@ -1,14 +1,32 @@
 <template>
 
-  <div :class="['servant-list-item',{card: isCard},{show: isShow},{following: isFollowing}]" :style="style" @click="clickHandler">
-    <div class="following-icon" v-show="isFollowing&&isCard">
-      <van-icon name="checked" color="#4b0" size="1.2em" />
+  <div
+    :class="['servant-list-item',{card: isCard},{show: isShow},{following: isFollowing}]"
+    :style="style"
+    @click="clickHandler"
+  >
+    <div
+      class="following-icon"
+      v-show="isFollowing&&isCard"
+    >
+      <van-icon
+        name="checked"
+        color="#4b0"
+        size="1.2em"
+      />
     </div>
 
-    <div :class="[unloadIconClass,'unload-icon']" v-lazy:background-image="loadedImgSrc"></div>
+    <div
+      :class="[unloadIconClass,'unload-icon']"
+      v-lazy:background-image="loadedImgSrc"
+    ></div>
     <div class="main">{{data.name}}</div>
     <div class="sub">{{addition}}</div>
-    <van-icon name="arrow" class="icon" v-show="! editMode" />
+    <van-icon
+      name="arrow"
+      class="icon"
+      v-show="! editMode"
+    />
   </div>
 
 </template>
@@ -137,16 +155,14 @@ export default {
     async toggleFollow() {
       if (!this.isFollowing)
         this.addServantSetting({ servantID: this.data.id });
-      else {
-        try {
-          await this.$dialog.confirm({
+      else
+        await this.$dialog
+          .confirm({
             title: '提示',
             message: '取消关注会清除练度数据，<br>确定要取消关注？',
             className: 'dialog'
-          });
-          this.removeServantSetting(this.data.id);
-        } catch (e) {}
-      }
+          })
+          .then(() => this.removeServantSetting(this.data.id));
     },
     ...mapMutations('userData', ['addServantSetting', 'removeServantSetting'])
   },

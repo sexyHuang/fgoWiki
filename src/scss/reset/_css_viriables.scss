@@ -12,4 +12,27 @@
   --goods-card-bg: transparent;
   --stress-btn-color: white;
   --stress-btn-bg: #eda703;
+  --danger-color: #ca0c0c;
+}
+
+%icon-card {
+  font-size: 54px;
+  width: 1em;
+  height: 1em;
+  background: center/100% no-repeat;
+  position: relative;
+  &::after {
+    content: attr(data-text);
+    font-size: 0.22em;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    line-height: 1;
+    color: white;
+    text-shadow: 1px 1px 1px black;
+    font-weight: 600;
+    -webkit-text-stroke: 0.2px #03a9f4;
+  }
 }

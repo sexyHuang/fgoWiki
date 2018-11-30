@@ -118,7 +118,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-%icon-card {
+/* %icon-card {
   width: 54px;
   height: 54px;
   background: center/100% no-repeat;
@@ -137,7 +137,7 @@ export default {
     font-weight: 600;
     -webkit-text-stroke: 0.2px #03a9f4;
   }
-}
+} */
 .icon-Buster {
   @extend %icon-card;
   background-image: url('./../../../assets/Buster.png');

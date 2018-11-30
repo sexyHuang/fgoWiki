@@ -1,22 +1,43 @@
 <template>
   <div class="skill-item">
     <div class="skill-item-header">
-      <img :src="skillIcon" alt="" class="skill-item-icon" @click="$emit('clickIcon',skill)">
+      <img
+        :src="skillIcon"
+        alt=""
+        class="skill-item-icon"
+        @click="$emit('clickIcon',skill)"
+      >
       <div class="skill-item-name">
-        {{skill.skillName}}{{skill.rank?'['+skill.rank+'] ':' '}}(CD:<span>{{skill.cd}}</span>)
+        {{skill.skillName}}{{skill.rank?'['+skill.rank+'] ':' '}}(CD:<span style="color: #fab70d">{{cd}}</span>)
 
-        <div :class="['skill-change-btn',{'un-checked': !isNew}]" @click="changeNew" v-if="data.length>1"></div>
+        <div
+          :class="['skill-change-btn',{'un-checked': !isNew}]"
+          @click="changeNew"
+          v-if="data.length>1"
+        ></div>
       </div>
-      <div class="skill-item-tar" v-if="skill.skillsTar">{{skill.skillsTar}}</div>
+      <div
+        class="skill-item-tar"
+        v-if="skill.skillsTar"
+      >{{skill.skillsTar}}</div>
     </div>
     <div class="skill-item-main">
-      <div class="skill-item-effect" v-for="(item, index) in skillDesc" :key="index">
+      <div
+        class="skill-item-effect"
+        v-for="(item, index) in skillDesc"
+        :key="index"
+      >
         <div class="skill-item-effect__desc">{{item}}</div>
         <ul class="skill-item-effect__data_ul">
           <template v-for="(_item, _index) in lv">
-            <li :class="['skill-item-effect__data_li',{
+            <li
+              :class="['skill-item-effect__data_li',{
               active: value === _index + 1||(_item[index] == lv[0][index]&&_item[index] == lv[9][index])
-            }]" :key="_index" v-if="_index==0||!(_item[index] == lv[0][index]&&_item[index] == lv[9][index])" @click="clickLv(_index)">
+            }]"
+              :key="_index"
+              v-if="_index==0||!(_item[index] == lv[0][index]&&_item[index] == lv[9][index])"
+              @click="clickLv(_index)"
+            >
               <div :class="{'smaller-text':_item[index].length>4}">{{_item[index]}}</div>
             </li>
           </template>
@@ -25,10 +46,14 @@
       </div>
       <div class="slider-cout">
         技能等级
-        <van-slider v-model="sliderVal" :step="10" :min="10" @change="slideChange"></van-slider>{{value}}
+        <van-slider
+          v-model="sliderVal"
+          :step="10"
+          :min="10"
+          @change="slideChange"
+        ></van-slider>{{value}}
 
       </div>
-      </van-cell>
 
     </div>
   </div>
@@ -56,6 +81,14 @@ export default {
     },
     lv() {
       return JSON.parse(this.skill.lv).map(val => val.split('/'));
+    },
+    cd() {
+      let sub = 0;
+      if (this.value >= 6) {
+        sub += 1;
+      }
+      if (this.value === 10) sub += 1;
+      return this.skill.cd - sub;
     }
   },
   methods: {
@@ -85,6 +118,9 @@ export default {
     value(val) {
       this.sliderVal = val * 10;
     }
+  },
+  mounted() {
+    this.sliderVal = this.value * 10;
   }
 };
 </script>
@@ -177,7 +213,7 @@ export default {
 }
 </style>
 <style lang="scss">
-  .van-slider__bar {
-    background: #fab70d;
-  }
+.van-slider__bar {
+  background: #fab70d;
+}
 </style>

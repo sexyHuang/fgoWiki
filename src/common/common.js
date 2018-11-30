@@ -3,10 +3,10 @@
  * @param {*} data 目标数据
  * @param {*} searchObj 过滤条件
  */
+
 export const search = (data, searchObj) => {
   let output = false;
   for (let key of Object.keys(searchObj)) {
-    let isBreak = false;
     let _obj = searchObj[key];
     let _match_keys = _obj.match_keys || [key],
       _match_mode = _obj.match_mode,
@@ -36,7 +36,7 @@ export const search = (data, searchObj) => {
           output = true;
         } else {
           output = false;
-          isBreak = true;
+
           break;
         }
       }
@@ -49,4 +49,53 @@ export const search = (data, searchObj) => {
 
 export const percentage = num => {
   return num * 100 + '%';
+};
+
+export const materialCal = (materialNeeds, prevSetting, currSetting) => {
+  //materialNeeds = JSON.parse(JSON.stringify(materialNeeds));
+  const calcFuns = {
+    getCloth(prevVal, currVal) {
+      if (prevVal || !currVal) return [];
+      return materialNeeds.find(val => val[0] === '31')[1];
+    },
+    lvs(prevVal, currVal) {
+      return currVal.reduce((pArr, cVal, idx) => {
+        let pVal = prevVal[idx];
+        if (cVal - pVal <= 0) return pArr;
+        cVal += 20;
+        pVal += 20;
+        let _arr = materialNeeds
+          .filter(([val]) => val - pVal >= 0 && cVal - val > 0)
+          .reduce((prev, [, currArr]) => [...prev, ...currArr], []);
+        return [...pArr, ..._arr];
+      }, []);
+    },
+    state(prevVal, currVal) {
+      if (prevVal - currVal >= 0) return [];
+      prevVal += 10;
+      currVal += 10;
+      return materialNeeds
+        .filter(([val]) => val - prevVal > 0 && currVal - val >= 0)
+        .reduce((prev, [, currArr]) => [...prev, ...currArr], []);
+    }
+  };
+  return Object.entries(currSetting)
+    .reduce((prevArr, [key, currSet]) => {
+      calcFuns[key](prevSetting[key], currSet).map(_val => {
+        _val = JSON.parse(JSON.stringify(_val));
+        let _idx = prevArr.findIndex(val => val.materialId === _val.materialId);
+        _val.state = [[_val.state, _val.count, 1]];
+        if (_idx > -1) {
+          prevArr[_idx].count += _val.count;
+          let _s_idx = prevArr[_idx].state.findIndex(
+            ([state]) => state === _val.state[0][0]
+          );
+          if (_s_idx < 0)
+            prevArr[_idx].state = [...prevArr[_idx].state, ..._val.state];
+          else prevArr[_idx].state[_s_idx][2] += 1;
+        } else prevArr.push(_val);
+      });
+      return prevArr;
+    }, [])
+    .sort((a, b) => a.materialId - b.materialId);
 };

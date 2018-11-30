@@ -1,6 +1,14 @@
 <template>
   <div id="app">
-    <van-nav-bar v-show="showTitle" :title="$store.state.system.title" fixed :z-index='100' :left-arrow="showGoBack" :left-text="goBackText" @click-left="goBack"></van-nav-bar>
+    <van-nav-bar
+      v-show="showTitle"
+      :title="$store.state.system.title"
+      fixed
+      :z-index='100'
+      :left-arrow="showGoBack"
+      :left-text="goBackText"
+      @click-left="goBack"
+    ></van-nav-bar>
     <!-- <transition :name="transitionName">
  -->
     <keep-alive :include="$store.state.system.aliveList">
@@ -16,13 +24,13 @@
 export default {
   data() {
     return {
-      transitionName: 'slide-left'
+      transitionName: "slide-left"
     };
   },
   computed: {
     style() {
       return {
-        'padding-top': !this.showTitle ? 0 : '1.22667rem'
+        "padding-top": !this.showTitle ? 0 : "1.22667rem"
       };
     },
     showTitle() {
@@ -34,14 +42,14 @@ export default {
       return this.$store.state.system.canGoBack;
     },
     goBackText() {
-      return this.showGoBack ? '' : '';
+      return this.showGoBack ? "" : "";
     }
   },
   watch: {
-    $route(to, from) {
+    $route() {
       this.transitionName = this.$store.state.system.isBack
-        ? 'slide-right'
-        : 'slide-left';
+        ? "slide-right"
+        : "slide-left";
     }
   },
   methods: {
@@ -53,6 +61,7 @@ export default {
 </script>
 <style lang="scss">
 @import './scss/reset/_reset';
+@import './scss/_layout';
 [v-cloak] {
   opacity: 0;
 }
@@ -141,12 +150,33 @@ export default {
 @font-face {
   font-family: 'custom-iconfont';
   src: url('./assets/iconfont.ttf') format('truetype');
+
 }
-.van-icon {
-  font-family: 'vant-icon', 'custom-iconfont' !important;
+%van-icon {
+  
+  font-family: 'custom-iconfont' !important;
+  font: normal normal normal 1em/1 custom-iconfont;
+ 
 }
 
 .van-icon-reset:before {
+   @extend %van-icon;
   content: '\e612';
+  position: relative;
+    display: inline-block;
+    
+    text-rendering: auto;
+}
+.van-icon-cloth{
+
+  position: relative;
+  width: 1em;
+  height: 0.9em;
+}
+.van-icon-cloth:before {
+  @extend %van-icon;
+  content: '\e605';
+  margin-top: -0.16em;
+  display: block;
 }
 </style>

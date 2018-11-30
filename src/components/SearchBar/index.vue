@@ -15,7 +15,7 @@
             <template v-for="(_item, _idx) in item.lists">
 
               <van-checkbox-group v-model="output[item.key].list[_idx]" :key="_idx">
-                <template v-for="(__item, __idx) in _item">
+                <template v-for="__item in _item">
                   <!-- 简单模式 -->
                   <van-checkbox v-if="typeof __item === 'string'" :key="__item" :name="__item">
                     {{ __item }}

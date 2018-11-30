@@ -1,5 +1,13 @@
 <template>
-  <van-picker :columns="columns" @change="onChange" value-key="name" show-toolbar :title="title" @cancel="onCancel" @confirm="onConfirm" />
+  <van-picker
+    :columns="columns"
+    @change="onChange"
+    value-key="name"
+    show-toolbar
+    :title="title"
+    @cancel="onCancel"
+    @confirm="onConfirm"
+  />
 </template>
 
 <script>
@@ -46,7 +54,7 @@ export default {
     }
   },
   methods: {
-    onChange(picker, values, index) {
+    onChange(picker) {
       let selectedIndexs = [];
       for (let _idx = 0; _idx <= 2; _idx++) {
         selectedIndexs.push(picker.getColumnIndex(_idx));

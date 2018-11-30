@@ -1,4 +1,4 @@
-import Vue from 'vue';
+//import Vue from 'vue';
 const state = {
   dTime: 0,
   aliveList: [],
@@ -10,7 +10,11 @@ const state = {
     'micromessenger',
   canGoBack: false
 };
-const getters = {};
+const getters = {
+  hasTitle(state) {
+    return state.showTitle && !state.isWeixin;
+  }
+};
 const mutations = {
   setDTime(state, date) {
     let _now = new Date();
