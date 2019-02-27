@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+
     <van-nav-bar
       v-show="showTitle"
       :title="$store.state.system.title"
@@ -9,6 +10,7 @@
       :left-text="goBackText"
       @click-left="goBack"
     ></van-nav-bar>
+
     <!-- <transition :name="transitionName">
  -->
     <keep-alive :include="$store.state.system.aliveList">
@@ -21,16 +23,20 @@
   </div>
 </template>
 <script>
+import UserAPI from '@/api/imp/User';
 export default {
   data() {
     return {
-      transitionName: "slide-left"
+      transitionName: 'slide-left'
     };
+  },
+  created() {
+    UserAPI.checkLogin();
   },
   computed: {
     style() {
       return {
-        "padding-top": !this.showTitle ? 0 : "1.22667rem"
+        'padding-top': !this.showTitle ? 0 : '1.22667rem'
       };
     },
     showTitle() {
@@ -42,14 +48,14 @@ export default {
       return this.$store.state.system.canGoBack;
     },
     goBackText() {
-      return this.showGoBack ? "" : "";
+      return this.showGoBack ? '' : '';
     }
   },
   watch: {
     $route() {
       this.transitionName = this.$store.state.system.isBack
-        ? "slide-right"
-        : "slide-left";
+        ? 'slide-right'
+        : 'slide-left';
     }
   },
   methods: {
@@ -65,6 +71,7 @@ export default {
 [v-cloak] {
   opacity: 0;
 }
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -150,25 +157,21 @@ export default {
 @font-face {
   font-family: 'custom-iconfont';
   src: url('./assets/iconfont.ttf') format('truetype');
-
 }
 %van-icon {
-  
   font-family: 'custom-iconfont' !important;
   font: normal normal normal 1em/1 custom-iconfont;
- 
 }
 
 .van-icon-reset:before {
-   @extend %van-icon;
+  @extend %van-icon;
   content: '\e612';
   position: relative;
-    display: inline-block;
-    
-    text-rendering: auto;
-}
-.van-icon-cloth{
+  display: inline-block;
 
+  text-rendering: auto;
+}
+.van-icon-cloth {
   position: relative;
   width: 1em;
   height: 0.9em;

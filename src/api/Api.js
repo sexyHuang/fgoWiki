@@ -1,5 +1,5 @@
 import BaseApi from './BaseApi';
-import { SUCCESS, LOGIN_OUT, ABNORMAL } from './config/code';
+//import { SUCCESS, LOGIN_OUT, ABNORMAL } from './config/code';
 import { Toast } from 'vant';
 import { symbolContext } from './decorator/decorator';
 //import store from '@/store';
@@ -30,11 +30,22 @@ export default class Api extends BaseApi {
   }
   reject(error) {
     Toast.clear();
-    console.error(error);
+    throw error;
   }
-  before() {}
+  before(config) {
+    if (!config.not_show_loading)
+      this.loading(config.loading_message || '加载中...');
+  }
 
   after() {}
+
+  loading(message) {
+    this.showNotice({
+      message,
+      duration: 0,
+      type: 'loading'
+    });
+  }
   abnormal(message) {
     this.showNotice({
       message,
@@ -48,7 +59,7 @@ export default class Api extends BaseApi {
       type: 'fail'
     });
   }
-  showNotice({ message, position, duration, className, type }) {
+  showNotice({ message, position, duration, type }) {
     duration = duration || 1500;
     position = position || 'middle';
     Toast[type]({ message, position, duration });
@@ -59,33 +70,20 @@ export default class Api extends BaseApi {
     let res;
     try {
       let result = await this.axios(param.url, _config);
-      res = res = result && result.data ? result.data : null;
-      if (
-        !res.response ||
-        !res.resultCode ||
-        ABNORMAL.includes(res.resultCode)
-      ) {
-        param.abnormal
-          ? param.abnormal(param, res)
-          : this.abnormal(res.msg || '请求返回格式不标准');
-      } else if (LOGIN_OUT.includes(res.resultCode)) {
-        this.loginOut();
-      } else if (SUCCESS.includes(res.resultCode)) {
-        param.successNotice
-          ? this.showNotice({
-              message: res.msg,
-              type: 'success'
-            })
-          : '';
-        param.success ? param.success(res) : '';
-      } else {
-        param.error ? param.error(res, param) : this.error(res.msg);
-      }
+      res = result && result.data ? result.data : null;
+      param.successNotice
+        ? this.showNotice({
+            message: res.msg || '加载完成',
+            type: 'success'
+          })
+        : Toast.clear();
+      param.success ? param.success(res) : '';
     } catch (e) {
-      console.error(e);
-
-      param.error ? param.error(res, param) : this.error('程序在开小差');
-      throw Error('程序在开小差');
+      if (param.error) {
+        Toast.clear();
+        param.error(e, param);
+      } else this.error('网络连接失败');
+      res = Promise.reject(e);
     }
     await this.after();
     return res;

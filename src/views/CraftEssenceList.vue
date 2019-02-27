@@ -2,7 +2,7 @@
   <div>
     <search-bar :searchObj="searchObj" @search="onSearch"></search-bar>
     <van-list v-model="loading" :finished="finished" @load="onLoad" class="list">
-      <router-link :to="'/craftEssenceInfo/'+item.id" v-for="(item, index) in show_list" :key="item.imgPath+'?imageMogr2/interlace/1'" class="list-item__card" v-lazy:background-image="base+item.imgPath">
+      <router-link :to="'/craftEssenceInfo/'+item.id" v-for="item in show_list" :key="item.imgPath+'?imageMogr2/interlace/1'" class="list-item__card" v-lazy:background-image="base+item.imgPath">
         <van-loading type="spinner" class="loading" />
       </router-link>
 
@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import SearchBar from './../components/SearchBar';
-import { BASE_URL } from './../conf/image';
+import SearchBar from '@/components/SearchBar';
+import { BASE_URL } from '@/library/conf/image';
 import { mapState } from 'vuex';
 export default {
   name: 'craftEssenceList',
@@ -145,7 +145,7 @@ export default {
 .list {
   display: flex;
   flex-wrap: wrap;
-  padding: 50px 5px 10px;
+  padding: 60px 5px 10px;
 
   &-item {
     &__card {

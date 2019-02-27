@@ -13,15 +13,15 @@ const SERVANT_CONF = Symbol('ser_conf');
 const _calcTreaDamage = curry((servant, enemy, extra_buff, servant_conf) => {
   servant_conf = servant_conf || {};
   let { treasure_lv, treasure_oc, open_event, skill_lvs } = servant_conf;
-  treasure_lv = treasure_lv || 1;
-  treasure_oc = treasure_oc || 1;
-  open_event = open_event || 1e6;
-  skill_lvs = skill_lvs || [1, 1, 1];
+  servant_conf.treasure_lv = treasure_lv || 1;
+  servant_conf.treasure_oc = treasure_oc || 1;
+  servant_conf.open_event = open_event || 1e6;
+  servant_conf.skill_lvs = skill_lvs || [1, 1, 1];
   let buffs_obj = enemyDamage(
     addExtraBuffs(getConfig({ ...servant_conf, data: servant }), extra_buff),
     enemy
   );
-  let damage_list = treasureDamage(buffs_obj);
+  let damage_list = treasureDamage(buffs_obj); 
   return {
     buffs: buffs_obj,
     servant: {
@@ -29,7 +29,7 @@ const _calcTreaDamage = curry((servant, enemy, extra_buff, servant_conf) => {
       name: servant.name,
       imgPath: servant.imgPath,
       id: servant.id
-    },
+    }, 
     treaEffect: servant.treaEffect,
     damage: damage_list
   };

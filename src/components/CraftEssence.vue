@@ -4,41 +4,76 @@
       <fake-row :text="data.name" />
     </div>
     <div class="craft-essence_header">
-      <img :src="icon" alt="" class="craft-essence_avatar" @click="showPreview(previewPics)" />
+      <img
+        :src="icon"
+        alt=""
+        class="craft-essence_avatar"
+        @click="showPreview(previewPics)"
+      />
       <div class="row">
-        <div class="col" data-title="画师">
+        <div
+          class="col"
+          data-title="画师"
+        >
           <fake-row :text="data.illust" />
         </div>
 
       </div>
       <div class="row">
-        <div class="col" data-title="稀有度">
+        <div
+          class="col"
+          data-title="稀有度"
+        >
           <fake-row :text="data.star?data.star+'星':''" />
         </div>
-        <div class="col" data-title="COST">
+        <div
+          class="col"
+          data-title="COST"
+        >
           <fake-row :text="data.cost" />
         </div>
       </div>
       <div class="row">
 
-        <fake-row class="col" data-title="ATK" :text="data.lv1Atk!==undefined?data.lv1Atk+'/'+data.lvmaxAtk:''" />
+        <fake-row
+          class="col"
+          data-title="ATK"
+          :text="data.lv1Atk!==undefined?data.lv1Atk+'/'+data.lvmaxAtk:''"
+        />
 
-        <fake-row class="col" data-title="HP" :text="data.lv1Hp!==undefined?data.lv1Hp+'/'+data.lvmaxHp:''" />
+        <fake-row
+          class="col"
+          data-title="HP"
+          :text="data.lv1Hp!==undefined?data.lv1Hp+'/'+data.lvmaxHp:''"
+        />
 
       </div>
     </div>
     <div class="craft-essence_main">
       <div class="row">
-        <div class="col" data-title="技能">
+        <div
+          class="col"
+          data-title="技能"
+        >
 
-          <fake-row class="row" :text="data.skillE" />
+          <fake-row
+            class="row"
+            :text="data.skillE"
+          />
 
-          <fake-row class="row" :text="data.skillMaxE" />
+          <fake-row
+            class="row"
+            :text="data.skillMaxE"
+          />
 
         </div>
       </div>
       <div class="row">
-        <fake-row class="col content" :text="introFormate(data.intro)" :rows="6">
+        <fake-row
+          class="col content"
+          :text="introFormate(data.intro)"
+          :rows="6"
+        >
 
         </fake-row>
       </div>
@@ -47,7 +82,7 @@
 </template>
 
 <script>
-import { BASE_URL } from '@/conf/image';
+import { BASE_URL } from '@/library/conf/image';
 import previewImage from '@/mixins/previewImage';
 import fakeRow from './fakeRow';
 export default {
@@ -116,6 +151,7 @@ export default {
     left: 0;
     top: 0;
     transform: scale(0.8);
+    clip-path: polygon(0 8%, 8% 0, 92% 0%, 100% 8%, 100% 100%, 0 100%);
   }
   &_main {
     border-right: 1px solid var(--border-color);

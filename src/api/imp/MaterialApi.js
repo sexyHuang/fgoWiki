@@ -8,23 +8,7 @@ class EventApi extends Api {
   constructor() {
     super(EventApi);
   }
-  before(config) {
-    if (!config.not_show_loading)
-      Toast.loading({
-        message: '加载中...',
-        duration: 0
-      });
-    //Indicator.open('加载中...');
-  }
-  after() {
-    return new Promise(resolve => {
-      //Indicator.close();
-      Toast.clear();
-      resolve();
-    });
-  }
-
-  @get(MATERIAL_LIST, true, {
+  @get(MATERIAL_LIST, false, {
     cache_key: 'MATERIAL_LIST'
     //cache_expried: 2 * 24 * 60 * 60 * 1e3
   })
@@ -39,7 +23,7 @@ class EventApi extends Api {
     });
   }
 
-  @get(MATERIAL_NEEDS, true, {
+  @get(MATERIAL_NEEDS, false, {
     cache_expried: 10 * 60 * 1e3
   })
   async _needs(params) {

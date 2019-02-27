@@ -32,22 +32,22 @@
 </template>
 
 <script>
-import { BASE_URL } from './../conf/image';
+import { BASE_URL } from '@/library/conf/image';
 import { upperFirst } from 'lodash';
-import { search } from '@/common/common';
+import { search } from '@/library/common/common';
 import { mapMutations } from 'vuex';
 export default {
   data() {
     return {
       rarityColor: ['', 'Bronze', 'Bronze', 'Silver', 'Gold', 'Gold'],
       loadedImgSrc: {
-        src: BASE_URL + this.data.imgPath + '?imageMogr2/interlace/1',
-        loading: require('./../assets/icons.png'),
-        error: require('./../assets/icons.png')
+        src: BASE_URL + this.data.imgPath + '?imageMogr2/thumbnail/70/interlace/1',
+        loading: require('@/assets/icons.png'),
+        error: require('@/assets/icons.png')
       }
     };
   },
-  props: {
+  props: { 
     isCard: {
       type: Boolean,
       default: false

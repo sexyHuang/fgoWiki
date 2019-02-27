@@ -1,67 +1,163 @@
 <template>
   <div class="treasure-calc">
-    <van-collapse v-model="activeName" accordion>
-      <van-cell is-link @click="showEnemyPicker('enemy','敌对目标')" center class="main-cell">
+    <van-collapse
+      v-model="activeName"
+      accordion
+    >
+      <van-cell
+        is-link
+        @click="showEnemyPicker('enemy','敌对目标')"
+        center
+        class="main-cell"
+      >
         <div slot="title">敌对目标</div>
-        <img :src="img_base+enemy.imgPath+small_pic" alt="" v-if="enemy.imgPath" class="avatar">
+        <img
+          :src="img_base+enemy.imgPath+small_pic"
+          alt=""
+          v-if="enemy.imgPath"
+          class="avatar"
+        >
 
         <span class="sub-text">
           {{enemy.name||'未选择'}}
         </span>
       </van-cell>
       <van-collapse-item name="1">
-        <div slot="title" class="collapse-title"><span class="main-text">附加BUFF</span>
+        <div
+          slot="title"
+          class="collapse-title"
+        ><span class="main-text">附加BUFF</span>
           <span class="sub-text dot-1">{{extra_buff_abstract}}</span>
         </div>
-        <van-switch-cell v-model="custom_mode" title="自定义模式" size="20px" class="van-hairline" />
+        <van-switch-cell
+          v-model="custom_mode"
+          title="自定义模式"
+          size="20px"
+          class="van-hairline"
+        />
         <template v-if="!custom_mode">
-          <van-cell is-link title="拐配置" @click="onNormalPickerShow('extra_buffs.support',support_column,'拐配置')">
+          <van-cell
+            is-link
+            title="拐配置"
+            @click="onNormalPickerShow('extra_buffs.support',support_column,'拐配置')"
+          >
             <span class="sub-text">{{support_abstract}}</span>
           </van-cell>
-          <van-cell is-link title="衣服" @click="onNormalPickerShow('extra_buffs.clothes',clothes_column,'拐配置')">
+          <van-cell
+            is-link
+            title="衣服"
+            @click="onNormalPickerShow('extra_buffs.clothes',clothes_column,'拐配置')"
+          >
             <span class="sub-text">{{extra_buffs.clothes.name||'无'}}</span>
           </van-cell>
-          <van-cell is-link title="礼装" @click="onNormalPickerShow('extra_buffs.craft_essence',ce_column,'拐配置')">
+          <van-cell
+            is-link
+            title="礼装"
+            @click="onNormalPickerShow('extra_buffs.craft_essence',ce_column,'拐配置')"
+          >
             <span class="sub-text">{{extra_buffs.craft_essence.name||'无'}}</span>
           </van-cell>
 
         </template>
 
-        <van-field pattern="\d*" v-model="extra_buffs.costom.value.atk" label="ATK" input-align="right" type="number" icon="edit" max="2400" />
+        <van-field
+          pattern="\d*"
+          :value="extra_buffs.costom.value.atk"
+          @input="InputHandler($event,`extra_buffs.costom.value.atk`)"
+          label="ATK"
+          input-align="right"
+          type="number"
+          icon="edit"
+          max="2400"
+        />
         <template v-if="custom_mode">
 
-          <van-field pattern="\d*" v-model="extra_buffs.costom.value[item[0]]" :label="item[1]" input-align="right" type="number" icon="edit" max="100" v-for="(item, index) in costom_column" :key="index" />
+          <van-field
+            pattern="\d*"
+            :value="extra_buffs.costom.value[item[0]]"
+            @input="InputHandler($event,`extra_buffs.costom.value.${item[0]}`)"
+            :label="item[1]"
+            input-align="right"
+            type="number"
+            icon="edit"
+            max="100"
+            v-for="(item, index) in costom_column"
+            :key="index"
+          />
 
         </template>
       </van-collapse-item>
       <van-collapse-item name="2">
-        <div slot="title" class="collapse-title">
-          <span class="main-text">从者设定<van-checkbox v-model="noSkill" @click.native.stop>不开技能</van-checkbox></span>
+        <div
+          slot="title"
+          class="collapse-title"
+        >
+          <span class="main-text">从者设定<van-checkbox
+              v-model="noSkill"
+              @click.native.stop
+            >不开技能</van-checkbox></span>
           <span>
-            <img :src="img_base+servant.imgPath+small_pic" alt="" v-if="servant.imgPath" class="avatar">
+            <img
+              :src="img_base+servant.imgPath+small_pic"
+              alt=""
+              v-if="servant.imgPath"
+              class="avatar"
+            >
             <span class="sub-text">{{servant_setting_abstract}}</span>
           </span>
 
         </div>
 
-        <van-switch-cell v-model="appoint_servant" title="指定英灵" size="20px" class="van-hairline" />
+        <van-switch-cell
+          v-model="appoint_servant"
+          title="指定英灵"
+          size="20px"
+          class="van-hairline"
+        />
         <template v-if="appoint_servant">
-          <van-cell is-link title="宝具等级" @click="showNormalPicker('servant_setting.treasure_lv',lvs,'宝具等级')">
+          <van-cell
+            is-link
+            title="宝具等级"
+            @click="showNormalPicker('servant_setting.treasure_lv',lvs,'宝具等级')"
+          >
             <span class="sub-text">{{servant_setting.treasure_lv}}宝</span>
           </van-cell>
-          <van-cell is-link title="OC" @click="showNormalPicker('servant_setting.treasure_oc',lvs,'宝具OC')">
+          <van-cell
+            is-link
+            title="OC"
+            @click="showNormalPicker('servant_setting.treasure_oc',lvs,'宝具OC')"
+          >
             <span class="sub-text">{{servant_setting.treasure_oc}}00%</span>
           </van-cell>
-          <van-cell is-link @click="onNormalPickerShow('servant_setting.skill_lvs',skill_options,'技能等级')" v-show="!noSkill">
+          <van-cell
+            is-link
+            @click="onNormalPickerShow('servant_setting.skill_lvs',skill_options,'技能等级')"
+            v-show="!noSkill"
+          >
             <span slot="title">
               <span>技能等级</span>
-              <van-button size="mini" style="margin-left:0.6em; width: 3em;" round @click.stop="servant_setting.skill_lvs=[10,10,10]">310</van-button>
+              <van-button
+                size="mini"
+                style="margin-left:0.6em; width: 3em;"
+                round
+                @click.stop="InputHandler([10,10,10],'servant_setting.skill_lvs')"
+              >310</van-button>
             </span>
             <span class="sub-text">{{servant_setting.skill_lvs.join('/')}}</span>
           </van-cell>
-          <van-cell is-link @click="showServantPicker('servant','从者')" center class="main-cell">
+          <van-cell
+            is-link
+            @click="showServantPicker('servant','从者')"
+            center
+            class="main-cell"
+          >
             <div slot="title">从者</div>
-            <img :src="img_base+servant.imgPath+small_pic" alt="" v-if="servant.imgPath" class="avatar">
+            <img
+              :src="img_base+servant.imgPath+small_pic"
+              alt=""
+              v-if="servant.imgPath"
+              class="avatar"
+            >
 
             <span class="sub-text">
               {{servant.name||'未选择'}}
@@ -69,17 +165,30 @@
           </van-cell>
         </template>
         <template v-else>
-          <van-cell is-link title="4星-宝具等级" @click="showNormalPicker('servant_setting.sr_treasure_lv',lvs,'宝具等级')">
+          <van-cell
+            is-link
+            title="4星-宝具等级"
+            @click="showNormalPicker('servant_setting.sr_treasure_lv',lvs,'宝具等级')"
+          >
             <span class="sub-text">{{servant_setting.sr_treasure_lv}}宝</span>
           </van-cell>
-          <van-cell is-link title="5星-宝具等级" @click="showNormalPicker('servant_setting.ssr_treasure_lv',lvs,'宝具等级')">
+          <van-cell
+            is-link
+            title="5星-宝具等级"
+            @click="showNormalPicker('servant_setting.ssr_treasure_lv',lvs,'宝具等级')"
+          >
             <span class="sub-text">{{servant_setting.ssr_treasure_lv}}宝</span>
           </van-cell>
-          <van-cell is-link title="OC" @click="showNormalPicker('servant_setting.treasure_oc',lvs,'宝具OC')">
+          <van-cell
+            is-link
+            title="OC"
+            @click="showNormalPicker('servant_setting.treasure_oc',lvs,'宝具OC')"
+          >
             <span class="sub-text">{{servant_setting.treasure_oc}}00%</span>
           </van-cell>
           <van-cell title="技能等级">
             <van-radio-group v-model="servant_setting.skill_mode">
+              <van-radio name="2">按当前练度</van-radio>
               <van-radio name="1">310</van-radio>
             </van-radio-group>
           </van-cell>
@@ -88,18 +197,38 @@
       </van-collapse-item>
     </van-collapse>
 
-    <van-button block type="primary" @click="calc">计算</van-button>
-    <van-collapse v-model="dactiveName" accordion>
+    <van-button
+      block
+      type="primary"
+      @click="calc"
+    >计算</van-button>
+    <van-collapse
+      v-model="dactiveName"
+      accordion
+    >
       <van-cell v-show="damage_list.length>0&&!appoint_servant">
         <van-radio-group v-model="effectType">
           <van-radio name="1">光炮</van-radio>
           <van-radio name="2">单体</van-radio>
         </van-radio-group>
       </van-cell>
-      <van-collapse-item v-for="({servant,damage,buffs,treaEffect}, index) in damage_list" :key="index" :name="index" v-show="appoint_servant||effectType == treaEffect">
-        <div slot="title" class="collapse-title">
+      <van-collapse-item
+        v-for="({servant,damage,buffs,treaEffect}, index) in damage_list"
+        :key="index"
+        :name="index"
+        v-show="appoint_servant||effectType == treaEffect"
+      >
+        <div
+          slot="title"
+          class="collapse-title"
+        >
           <span>
-            <img :src="img_base+servant.imgPath+small_pic" alt="" v-show="servant.imgPath" class="avatar">
+            <img
+              :src="img_base+servant.imgPath+small_pic"
+              alt=""
+              v-show="servant.imgPath"
+              class="avatar"
+            >
             {{damage.min}}~{{damage.max}} 平均伤害：{{damage.avg}}
           </span>
 
@@ -113,7 +242,11 @@
           宝具倍率{{buffs.treasure_rate|percentage}} 宝具提升{{buffs.trea_buff|percentage}}
         </van-cell>
         <van-cell>
-          <div slot="title"><img style="height: 0.5rem;" :src="img_base+'/fgo/'+buffs.treasure_type+'.png'" alt=""></div>
+          <div slot="title"><img
+              style="height: 0.5rem;"
+              :src="img_base+'/fgo/'+buffs.treasure_type+'.png'"
+              alt=""
+            ></div>
           性能提升{{buffs.card_buff|percentage}}
         </van-cell>
         <van-cell>
@@ -126,11 +259,32 @@
         </van-cell>
       </van-collapse-item>
     </van-collapse>
-    <van-popup v-model="picker_show" position="bottom">
-      <muti-picker :picker_styles="picker_styles" :c_data='picking_columns' @confirm="onConfirm" @cancel="onCancel" :defaultIndex="default_index" :title="picker_title"></muti-picker>
+    <van-popup
+      v-model="picker_show"
+      position="bottom"
+    >
+      <muti-picker
+        :picker_styles="picker_styles"
+        :c_data='picking_columns'
+        @confirm="onConfirm"
+        @cancel="onCancel"
+        :defaultIndex="default_index"
+        :title="picker_title"
+      ></muti-picker>
     </van-popup>
-    <van-popup v-model="normal_picker.show" position="bottom">
-      <van-picker ref="normal_picker" :columns="normal_picker.columns" valueKey="name" show-toolbar :title="normal_picker.title" @confirm="onNormalPickerConfirm" @cancel="onNormalPickerCancel" />
+    <van-popup
+      v-model="normal_picker.show"
+      position="bottom"
+    >
+      <van-picker
+        ref="normal_picker"
+        :columns="normal_picker.columns"
+        valueKey="name"
+        show-toolbar
+        :title="normal_picker.title"
+        @confirm="onNormalPickerConfirm"
+        @cancel="onNormalPickerCancel"
+      />
     </van-popup>
   </div>
 </template>
@@ -140,18 +294,16 @@ let picker_buff = {};
 let enemy_list,
   servant_list,
   skill_setting = [1, 1, 1];
-import MutiPicker from './../../components/MutiPicker';
+import MutiPicker from '@/components/MutiPicker';
 import {
-  CLASS,
   ENEMY_PICKER_MODEL,
-  SERVANT_PICKER_MODEL,
   SUPPORT,
   CRAFT_CSSENCE,
   CLOTHES
 } from './conf';
-import { BASE_URL } from '@/conf/image';
-import { mapState } from 'vuex';
-import TreasureCalc from './../../treasureCalc/index';
+import { BASE_URL } from '@/library/conf/image';
+import { mapState, mapMutations } from 'vuex';
+import TreasureCalc from '@/library/treasureCalc';
 let treaCalcObj = new TreasureCalc().setServantConfig({
   treasure_lv: 1,
   skill_lvs: [1, 1, 1],
@@ -159,7 +311,7 @@ let treaCalcObj = new TreasureCalc().setServantConfig({
 });
 
 export default {
-  name: 'treasureCalc',
+  name: 'treasureCalc', 
   components: {
     MutiPicker
   },
@@ -265,7 +417,7 @@ export default {
     // 不！能！获取组件实例 `this`
     // 因为当守卫执行前，组件实例还没被创建
     next(vm => {
-     // vm.$store.commit('setShowTitle', false);
+      // vm.$store.commit('setShowTitle', false);
       vm.$setTitle('宝具伤害计算');
     });
   },
@@ -274,6 +426,14 @@ export default {
       servant_list: state => state.list,
       servant_treasure_list: state => state.list4Treasure
     }),
+    ...mapState('userData', [
+      'servant_map',
+      'tc_custom_mode',
+      'tc_extra_buffs',
+      'tc_servant_setting',
+      'tc_appoint_servant',
+      'tc_enemy'
+    ]),
     servant_setting_abstract() {
       if (this.appoint_servant) {
         let { treasure_lv, treasure_oc, skill_lvs } = this.servant_setting;
@@ -288,7 +448,8 @@ export default {
         skill_mode
       } = this.servant_setting;
       let skill_mode_text = {
-        1: '310'
+        1: '310',
+        2: '按练度'
       };
       return `四星${sr_treasure_lv}宝 五星${ssr_treasure_lv}宝 OC${treasure_oc} ${
         skill_mode_text[skill_mode]
@@ -330,8 +491,26 @@ export default {
         )
         .join(' ');
     }
+    /* extra_buffs: {
+      get() {
+        return this.tc_extra_buffs;
+      },
+      set(data) {
+        let key = 'extra_buffs';
+
+        this.updateTreasureCalcSetting({ key, data });
+      }
+    } */
+  },
+  mounted() {
+    this.extra_buffs = this.tc_extra_buffs;
+    this.custom_mode = this.tc_custom_mode;
+    this.appoint_servant = this.tc_appoint_servant;
+    this.servant_setting = this.tc_servant_setting;
+    this.enemy = this.tc_enemy;
   },
   methods: {
+    ...mapMutations('userData', ['updateTreasureCalcSetting']),
     showEnemyPicker(target_name, title = '') {
       if (!enemy_list) {
         enemy_list = JSON.parse(ENEMY_PICKER_MODEL);
@@ -374,11 +553,16 @@ export default {
     },
     onConfirm(values, indexs) {
       let _names = this.target_name.split('.');
-      let tar = this;
+
+      let TarName = _names.shift(),
+        Tar = JSON.parse(JSON.stringify(this[TarName])),
+        _tar = Tar;
       while (_names.length > 1) {
-        tar = tar[_names.shift()];
+        _tar = _tar[_names.shift()];
       }
-      tar[_names.shift()] = values.pop();
+      if (_names.length > 0) _tar[_names.shift()] = values.pop();
+      else Tar = values.pop();
+      this[TarName] = Tar;
       picker_buff[this.target_name] = indexs;
       this.picker_show = false;
     },
@@ -397,6 +581,7 @@ export default {
           this.$toast.fail('未选从者');
           return false;
         }
+
         let res = treaCalcObj.calcFun()(this.servant, {});
         this.damage_list = [res];
         this.dactiveName = 0;
@@ -404,7 +589,10 @@ export default {
         let _output = this.servant_treasure_list.map(val => {
           let treasure_lv,
             skill_lvs = {
-              1: [10, 10, 10]
+              1: [10, 10, 10],
+              2: this.servant_map[val.id]
+                ? this.servant_map[val.id].lvs
+                : [10, 10, 10]
             };
           let rarity_map = {
             4: 'sr_treasure_lv',
@@ -444,18 +632,35 @@ export default {
         this.$refs.normal_picker.setValues(tar);
       });
     },
-    onNormalPickerConfirm(values, indexs) {
+    onNormalPickerConfirm(values) {
       let { target } = this.normal_picker;
       let _names = target.split('.');
-      let tar = this;
+      let TarName = _names.shift(),
+        Tar = JSON.parse(JSON.stringify(this[TarName])),
+        _tar = Tar;
       while (_names.length > 1) {
-        tar = tar[_names.shift()];
+        _tar = _tar[_names.shift()];
       }
-      tar[_names.shift()] = values;
+      if (_names.length > 0) _tar[_names.shift()] = values;
+      else Tar = values;
+      this[TarName] = Tar;
       this.normal_picker.show = false;
     },
     onNormalPickerCancel() {
       this.normal_picker.show = false;
+    },
+    InputHandler(value, key) {
+      value = value * 1 || value;
+      let _names = key.split('.');
+      let TarName = _names.shift(),
+        Tar = JSON.parse(JSON.stringify(this[TarName])),
+        _tar = Tar;
+      while (_names.length > 1) {
+        _tar = _tar[_names.shift()];
+      }
+      if (_names.length > 0) _tar[_names.shift()] = value;
+      else Tar = value;
+      this[TarName] = Tar;
     }
   },
   watch: {
@@ -473,11 +678,19 @@ export default {
     },
     enemy(val) {
       treaCalcObj = treaCalcObj.setEnemy(val);
+      this.updateTreasureCalcSetting({
+        key: 'enemy',
+        data: val && JSON.parse(JSON.stringify(val))
+      });
     },
     servant_setting: {
       deep: true,
-      handler(val, oVal) {
+      handler(val) {
         let { treasure_lv, treasure_oc, skill_lvs } = val;
+        this.updateTreasureCalcSetting({
+          key: 'servant_setting',
+          data: JSON.parse(JSON.stringify(val))
+        });
         treaCalcObj = treaCalcObj.setServantConfig({
           treasure_lv,
           treasure_oc,
@@ -488,8 +701,10 @@ export default {
     extra_buffs: {
       deep: true,
       handler(val) {
-        let buffs = [];
-        let _obj = JSON.parse(JSON.stringify(this.extra_buffs));
+        let buffs;
+        let _obj = JSON.parse(JSON.stringify(val));
+        this.updateTreasureCalcSetting({ key: 'extra_buffs', data: _obj });
+        let custom_mode = this.custom_mode;
         this.extra_buffs_calc = {
           atk: 0,
           atk_buff: 0,
@@ -500,11 +715,18 @@ export default {
           quick_buff: 0,
           arts_buff: 0
         };
-        Object.values(_obj).map(val => {
-          if (Array.isArray(val)) buffs.push(...val);
-          else buffs.push(val);
-          return val;
-        });
+        buffs = Object.entries(_obj).reduce((perv, [key, val]) => {
+          if (!custom_mode) {
+            if (key === 'costom') {
+              perv.push({ value: { atk: val.value.atk } });
+            } else if (Array.isArray(val)) perv.push(...val);
+            else perv.push(val);
+          } else if (key === 'costom') {
+            perv.push(val);
+          }
+
+          return perv;
+        }, []);
         buffs.map(val => {
           val = val.value || {};
           for (let _key of Object.keys(val)) {
@@ -516,18 +738,19 @@ export default {
       }
     },
     custom_mode(val) {
-      if (!val) {
-        Object.keys(this.extra_buffs.costom.value).map(val => {
-          if (val != 'atk') this.extra_buffs.costom.value[val] = 0;
-        });
-      } else {
-        (this.extra_buffs.clothes = []),
-          (this.extra_buffs.craft_essence = []),
-          (this.extra_buffs.support = []);
-      }
+      this.updateTreasureCalcSetting({ key: 'custom_mode', data: val });
     },
     extra_buffs_calc(val) {
       treaCalcObj = treaCalcObj.setExtraBuffs(val);
+    },
+    appoint_servant(val) {
+      this.updateTreasureCalcSetting({ key: 'appoint_servant', data: val });
+    },
+    servant(val) {
+      let _id = val.id;
+      this.servant_setting.skill_lvs = this.servant_map[_id]
+        ? this.servant_map[_id].lvs
+        : [10, 10, 10];
     }
   },
   filters: {

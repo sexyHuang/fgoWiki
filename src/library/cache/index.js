@@ -27,7 +27,7 @@ class Cache {
     if (typeof (expried * 1) === 'number' && expried > 0)
       expried = new Date().getTime() + expried * 1;
     else expried = 1e13;
-    if (!key || !value) {
+    if (!key || value === undefined) {
       throw Error('必须有key和value！！！');
     }
     this[CACHE_DATA][key] = {

@@ -65,6 +65,7 @@
     <van-tabs
       v-model="active"
       swipeable
+      :line-width="winWidth/tabs.length"
     >
       <van-tab
         v-for="(item,index) in tabs"
@@ -139,16 +140,16 @@
 
 <script>
 import isEqual from 'lodash/isEqual';
-import ServantApi from './../../api/imp/ServantApi';
-import { getServantImages, BASE_URL } from './../../conf/image';
+import ServantApi from '@/api/imp/ServantApi';
+import { getServantImages, BASE_URL } from '@/library/conf/image';
 import { upperFirst } from 'lodash';
 //import {BASE_URL} from './../../conf/image';
 import MyRate from '@/components/MyRate';
-import previewImage from './../../mixins/previewImage';
+import previewImage from '@/mixins/previewImage';
 import MaterialList from './components/MaterialList';
 import { mapMutations, mapGetters, mapState, mapActions } from 'vuex';
-import { materialCal } from './../../common/common';
-import MaterialCalcResultList from './../../components/MaterialCalcResultList';
+import { materialCal } from '@/library/common/common';
+import MaterialCalcResultList from '@/components/MaterialCalcResultList';
 let start = {
   X: -1,
   Y: -1
@@ -173,6 +174,7 @@ export default {
       active: 0,
       MaterialList: [],
       headHeight: '2.88rem',
+      winWidth: window.innerWidth,
       translateY: 0,
       transition: 'none',
       tabsList: {
@@ -340,7 +342,12 @@ export default {
       let _servantID = vm.$route.params.ID,
         infoPromise = ServantApi.info(_servantID),
         materialPromise = ServantApi.materialNeeds(_servantID);
-      vm.info = await infoPromise;
+      try {
+        vm.info = await infoPromise;
+      } catch (e) {
+        vm.$router.go(-1);
+      }
+
       vm.MaterialList = await materialPromise;
       vm.$setTitle(vm.info.name);
       vm.isFollowing &&
@@ -396,6 +403,16 @@ export default {
     settingHandler() {
       let servantID = this.info.id,
         data = JSON.parse(JSON.stringify(this.servantSetting));
+      let material_arr = materialCal(
+        this.fmtMaterialList,
+        {
+          getCloth: false,
+          lvs: [1, 1, 1],
+          state: 0
+        },
+        this.servantSetting
+      );
+      data.material_arr = material_arr;
       this.addServantSetting({ servantID, data });
       this.$toast.success({ message: '设置成功', duration: 1500 });
     },

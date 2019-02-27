@@ -31,8 +31,8 @@
 <script>
 import { mapState } from 'vuex';
 
-import ServantListItem from './../components/ServantListItem';
-import SearchBar from './../components/SearchBar';
+import ServantListItem from '@/components/ServantListItem';
+import SearchBar from '@/components/SearchBar';
 export default {
   name: 'servantList',
   data() {
@@ -271,22 +271,17 @@ export default {
       vm.$setTitle('英灵列表');
     });
   }
-  /* created() {},
-  activated() {
-    this.$store.commit('setShowTitle', false);
-  } */
 };
 </script>
 
 
 <style scoped lang='scss'>
-.servant-list-page {
-}
+
 .servant-list {
   display: flex;
   flex-wrap: wrap;
   overflow: auto;
-  padding: 44px 0 42px;
+  padding: 54px 0 42px;
   .nothing {
     width: 100%;
     height: calc(100vh - 86px);

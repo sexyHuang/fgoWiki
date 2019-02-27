@@ -1,19 +1,25 @@
 <template>
-    <div v-if="!text">
+  <div v-if="!text">
 
-        <template v-for="(item, index) in new Array(rows).fill(1)">
-            <div :key="index" style="width: 100%; padding: 0 10%;">
-                <span class="fake-text">
-                    {{index}}
-                </span>
-            </div>
+    <template v-for="(item, index) in new Array(rows).fill(1)">
+      <div
+        :key="index"
+        style="width: 100%; padding: 0 10%;"
+      >
+        <span class="fake-text">
+          {{index}}
+        </span>
+      </div>
 
-        </template>
+    </template>
 
-    </div>
-    <div v-else v-html="text">
+  </div>
+  <div
+    v-else
+    v-html="text"
+  >
 
-    </div>
+  </div>
 
 </template>
 
@@ -25,7 +31,7 @@ export default {
       default: 1
     },
     text: {
-      type: String,
+      type: String | Number,
       default: ''
     }
   }
@@ -40,6 +46,5 @@ export default {
   width: 100%;
   height: 1em;
   line-height: 1em;
-  
 }
 </style>

@@ -5,6 +5,7 @@
       swipeable
       sticky
       :offset-top="offsetTop"
+      :line-width="winWidth/(tabs.length+1)"
     >
       <van-tab
         v-for="(item,index) in tabs"
@@ -65,19 +66,19 @@
           ></van-stepper>
         </van-cell>
       </van-tab>
-      <!--  <van-tab title="上传素材">
+      <van-tab title="上传素材">
         <van-button
           type="primary"
           @click="setAll"
         >SET ALL</van-button>
-      </van-tab> -->
+      </van-tab>
     </van-tabs>
   </div>
 </template>
 
 <script>
-import MaterialApi from './../api/imp/MaterialApi';
-import { BASE_URL } from '@/conf/image';
+import MaterialApi from '@/api/imp/MaterialApi';
+import { BASE_URL } from '@/library/conf/image';
 import { mapState, mapMutations } from 'vuex';
 
 export default {
@@ -112,7 +113,8 @@ export default {
           type: 3
         }
       ],
-      showKeyboard: false
+      showKeyboard: false,
+      winWidth: window.innerWidth
     };
   },
   computed: {

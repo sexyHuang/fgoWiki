@@ -81,20 +81,23 @@ export const materialCal = (materialNeeds, prevSetting, currSetting) => {
   };
   return Object.entries(currSetting)
     .reduce((prevArr, [key, currSet]) => {
-      calcFuns[key](prevSetting[key], currSet).map(_val => {
-        _val = JSON.parse(JSON.stringify(_val));
-        let _idx = prevArr.findIndex(val => val.materialId === _val.materialId);
-        _val.state = [[_val.state, _val.count, 1]];
-        if (_idx > -1) {
-          prevArr[_idx].count += _val.count;
-          let _s_idx = prevArr[_idx].state.findIndex(
-            ([state]) => state === _val.state[0][0]
+      if (calcFuns[key])
+        calcFuns[key](prevSetting[key], currSet).map(_val => {
+          _val = JSON.parse(JSON.stringify(_val));
+          let _idx = prevArr.findIndex(
+            val => val.materialId === _val.materialId
           );
-          if (_s_idx < 0)
-            prevArr[_idx].state = [...prevArr[_idx].state, ..._val.state];
-          else prevArr[_idx].state[_s_idx][2] += 1;
-        } else prevArr.push(_val);
-      });
+          _val.state = [[_val.state, _val.count, 1]];
+          if (_idx > -1) {
+            prevArr[_idx].count += _val.count;
+            let _s_idx = prevArr[_idx].state.findIndex(
+              ([state]) => state === _val.state[0][0]
+            );
+            if (_s_idx < 0)
+              prevArr[_idx].state = [...prevArr[_idx].state, ..._val.state];
+            else prevArr[_idx].state[_s_idx][2] += 1;
+          } else prevArr.push(_val);
+        });
       return prevArr;
     }, [])
     .sort((a, b) => a.materialId - b.materialId);

@@ -7,9 +7,20 @@ export function controller(path) {
     target.prototype[symbolContext] = null;
   };
 }
-function baseMethods(target, key, descriptor, name, path, successNotice) {
+function baseMethods(
+  target,
+  key,
+  descriptor,
+  name,
+  path,
+  successNotice,
+  cacheSetting
+) {
+  if (cacheSetting) {
+    let { cache_key, cache_expried } = cacheSetting;
+    _cache(target, key, descriptor, cache_key, cache_expried);
+  }
   let method = descriptor.value;
-
   descriptor.value = async arg => {
     let _path = path;
     arg.successNotice = successNotice;
@@ -32,28 +43,28 @@ function baseMethods(target, key, descriptor, name, path, successNotice) {
 }
 export function get(path, successNotice, cacheSetting) {
   return function(target, key, descriptor) {
-    if (cacheSetting)
-      _cache(
-        target,
-        key,
-        descriptor,
-        cacheSetting.cache_key,
-        cacheSetting.cache_expried
-      );
-    baseMethods(target, key, descriptor, 'get', path, successNotice);
+    baseMethods(
+      target,
+      key,
+      descriptor,
+      'get',
+      path,
+      successNotice,
+      cacheSetting
+    );
   };
 }
 export function post(path, successNotice, cacheSetting) {
   return function(target, key, descriptor) {
-    if (cacheSetting)
-      _cache(
-        target,
-        key,
-        descriptor,
-        cacheSetting.cache_key,
-        cacheSetting.cache_expried
-      );
-    baseMethods(target, key, descriptor, 'post', path, successNotice);
+    baseMethods(
+      target,
+      key,
+      descriptor,
+      'post',
+      path,
+      successNotice,
+      cacheSetting
+    );
   };
 }
 
@@ -68,46 +79,6 @@ export function autoAddUserInfo(target, key, descriptor) {
     return await method.call(target[symbolContext], arg);
   };
 }
-
-/* export function cache(cache_key = '', cache_expried) {
-  return function(target, key, descriptor) {
-    let method = descriptor.value;
-    descriptor.value = async (arg = {}) => {
-      let _cache_key = cache_key;
-      if (!_cache_key) {
-        _cache_key = arg.ache_id;
-      }
-      let cache_data = Cache.getData(_cache_key);
-      if (cache_data) {
-        switch (arg.ignore_cache) {
-          case 1: {
-            let res;
-            arg.not_show_loading = true;
-
-            return new Promise(resolve => {
-              resolve(cache_data);
-              method.call(target[symbolContext], arg).then(res => {
-                Cache.addData(_cache_key, res, cache_expried);
-                resolve(res);
-              });
-             
-            });
-          }
-          case 2:
-            break;
-          default:
-            return new Promise(resolve => {
-              resolve(cache_data);
-            });
-        }
-      }
-
-      let res = await method.call(target[symbolContext], arg);
-      Cache.addData(_cache_key, res, cache_expried);
-      return res;
-    };
-  };
-} */
 
 function _cache(target, key, descriptor, cache_key = '', cache_expried) {
   let method = descriptor.value;
@@ -129,22 +100,18 @@ function _cache(target, key, descriptor, cache_key = '', cache_expried) {
             res = cache_data;
           }
 
-          return new Promise(resolve => {
-           
-            resolve(res);
-          });
+          return Promise.resolve(res);
         }
         case 2:
           break;
         default:
-          return new Promise(resolve => {
-            resolve(cache_data);
-          });
+          return Promise.resolve(cache_data);
       }
     }
 
-    let res = await method.call(target[symbolContext], arg);
-    Cache.addData(_cache_key, res, cache_expried);
-    return res;
+    return method.call(target[symbolContext], arg).then(res => {
+      Cache.addData(_cache_key, res, cache_expried);
+      return res;
+    });
   };
 }

@@ -1,8 +1,8 @@
 const vuescroll = new Object();
 const listeners = new Map();
-vuescroll.install = (Vue, options) => {
+vuescroll.install = (Vue) => {
   Vue.directive('scroll', {
-    bind(el, binding, vnode, oldVnode) {
+    bind(el, binding) {
       let fun = ev => {
         binding.value(ev, el);
       };

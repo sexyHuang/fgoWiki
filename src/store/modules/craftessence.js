@@ -1,4 +1,4 @@
-import { search } from '@/common/common';
+import { search } from '@/library/common/common';
 const state = {
   list: [],
   types: [],

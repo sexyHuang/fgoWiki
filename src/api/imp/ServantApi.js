@@ -6,30 +6,15 @@ import {
   SERVANT_TREASURE_LIST,
   SERVANT_MATERIAL_NEEDS
 } from '../config/url';
-import { Toast } from 'vant';
+//import { Toast } from 'vant';
 
 @controller('')
 class EventApi extends Api {
   constructor() {
     super(EventApi);
   }
-  before(config) {
-    if (!config.not_show_loading)
-      Toast.loading({
-        message: '加载中...',
-        duration: 0
-      });
-    //Indicator.open('加载中...');
-  }
-  after() {
-    return new Promise(resolve => {
-      //Indicator.close();
-      Toast.clear();
-      resolve();
-    });
-  }
 
-  @get(SERVANT_LIST, true, {
+  @get(SERVANT_LIST, false, {
     cache_key: 'SERVANT_LIST'
     //cache_expried: 2 * 24 * 60 * 60 * 1e3
   })
@@ -49,7 +34,7 @@ class EventApi extends Api {
     });
   }
 
-  @get(SERVANT_TREASURE_LIST, true, {
+  @get(SERVANT_TREASURE_LIST, false, {
     cache_key: 'SERVANT_TREASURE_LIST'
     //cache_expried: 2 * 24 * 60 * 60 * 1e3
   })
@@ -64,7 +49,7 @@ class EventApi extends Api {
     });
   }
 
-  @get(SERVANT_INFO, true, {
+  @get(SERVANT_INFO, false, {
     cache_expried: 2 * 24 * 60 * 60 * 1e3
   })
   async _getInfo(params) {
@@ -80,7 +65,7 @@ class EventApi extends Api {
     });
   }
 
-  @get(SERVANT_MATERIAL_NEEDS, true, {
+  @get(SERVANT_MATERIAL_NEEDS, false, {
     cache_expried: 0
   })
   async _getMaterialNeeds(params) {

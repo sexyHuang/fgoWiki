@@ -15,6 +15,8 @@ export default class BaseApi {
       url: '',
       method: 'post',
       baseURL: BASE_URL,
+      withCredentials: true,
+      timeout: 100000,
       transformRequest: [
         function(data) {
           // 这里可以在发送请求之前对请求数据做处理，比如form-data格式化等，这里可以使用开头引入的Qs（这个模块在安装axios的时候就已经安装了，不需要另外安装）
@@ -61,7 +63,7 @@ export default class BaseApi {
         return this.response(response);
       },
       error => {
-        return this.reject(error);
+        return this.reject(error.response);
       }
     );
     BaseApi.isinIt = this.axios = api;

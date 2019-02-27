@@ -1,5 +1,9 @@
 <template>
-  <div :class="['ce_cout',bgMode]" :style="style" v-cloak>
+  <div
+    :class="['ce_cout',bgMode]"
+    :style="style"
+    v-cloak
+  >
     <craft-essence :data="info"></craft-essence>
   </div>
 </template>
@@ -7,7 +11,7 @@
 <script>
 import CraftEssenceApi from '@/api/imp/CraftEssenceApi';
 import CraftEssence from '@/components/CraftEssence';
-import { BASE_URL } from '@/conf/image';
+import { BASE_URL } from '@/library/conf/image';
 export default {
   name: 'craftEssenceInfo',
   components: {
@@ -42,26 +46,13 @@ export default {
     // 因为当守卫执行前，组件实例还没被创建
     next(async vm => {
       //vm.$store.commit('setShowTitle', false);
-      vm.info = await CraftEssenceApi.info(vm.$route.params.ID).then(
-        async res => {
-          /*  await new Promise((resolve, reject) => {
-            let img = new Image();
-            img.onload = () => {
-              resolve();
-            };
-            img.error = () => {
-              reject();
-            };
-            setTimeout(() => {
-              resolve();
-            }, 5000);
-            img.src = BASE_URL + res.pic;
-          }); */
-          return res;
-        }
-      );
+      try {
+        vm.info = await CraftEssenceApi.info(vm.$route.params.ID);
 
-      vm.$setTitle(vm.info.name);
+        vm.$setTitle(vm.info.name);
+      } catch (e) {
+        vm.$router.go(-1);
+      }
     });
   }
 };

@@ -1,1 +1,1 @@
-export default '//fgo.mooyuer.com/fgo/'; //'//fgo.mooyuer.com/fgo/';
+export default '/'; //'//localhost:3001/' '//fgo.mooyuer.com/'; 

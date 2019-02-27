@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { BASE_URL } from './../conf/image';
+import { BASE_URL } from '@/library/conf/image';
 
 export default {
   data() {
