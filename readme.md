@@ -7,16 +7,14 @@
 
 ### 技术选型
 
-​
 | 技术 | 说明 | 官网 |
-| ---------- | ------------------ | --------------------------------------------------------------------------- |
+| ---------- | ------------------ | ----------------------------------------- |
 | Vue | 前端框架 | <a href="https://vuejs.org/">https://vuejs.org/</a> |
 | Vue-router | 路由框架 | <a href="https://router.vuejs.org/">https://router.vuejs.org/</a> |
 | Vuex | 全局状态管理框架 | <a href="https://vuex.vuejs.org/"> https://vuex.vuejs.org/</a> |
 | Vant-Ui | 前端 UI 框架 | <a href="https://youzan.github.io/vant/">https://youzan.github.io/vant/</a> |
 | Axios | 前端 HTTP 请求框架 | <a href="https://github.com/axios/axios">https://github.com/axios/axios</a> |
 ​
-
 ### 项目布局
 
 ```lua
