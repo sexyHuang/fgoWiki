@@ -3,7 +3,6 @@
  * @param {*} data 目标数据
  * @param {*} searchObj 过滤条件
  */
-
 export const search = (data, searchObj) => {
   let output = false;
   for (let key of Object.keys(searchObj)) {
@@ -47,9 +46,14 @@ export const search = (data, searchObj) => {
   return output;
 };
 
+/**
+ * @param {String|Number} num
+ * @return {String}
+ */
 export const percentage = num => {
   return num * 100 + '%';
 };
+
 
 export const materialCal = (materialNeeds, prevSetting, currSetting) => {
   //materialNeeds = JSON.parse(JSON.stringify(materialNeeds));

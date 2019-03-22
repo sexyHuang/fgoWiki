@@ -2,7 +2,7 @@
  * @Author: Sexy
  * @Date: 2018-12-12 13:53:06
  * @LastEditors: Sexy
- * @LastEditTime: 2018-12-12 14:51:09
+ * @LastEditTime: 2019-03-01 18:05:34
  * @Description: 全局路由守卫
  */
 
@@ -19,7 +19,7 @@ export default function globalGuards(router) {
         aliveList.push(to.name);
       }
     }
-
+    console.log('hook 1');
     next();
   });
   router.afterEach((to, from) => {

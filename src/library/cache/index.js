@@ -4,6 +4,10 @@ const SAVE = Symbol('save');
 const DEFAULT_CACHE_DATA_NAME = '__cache_datas';
 const CACHE_TIMER = Symbol('cache_timer');
 class Cache {
+  /**
+   * @param {String} cache_data_name
+   * @constructor
+   */
   constructor(cache_data_name) {
     this[CACHE_DATA_NAME] = cache_data_name || DEFAULT_CACHE_DATA_NAME;
     !localStorage.getItem(this[CACHE_DATA_NAME]) &&
@@ -18,9 +22,9 @@ class Cache {
   }
   /**
    * 添加项
-   * @param {*} key
+   * @param {String} key
    * @param {*} value
-   * @param {*} expried
+   * @param {Number|String} expried
    */
   addData(key, value, expried, cacheNow = true) {
     clearTimeout(this[CACHE_TIMER]);
@@ -44,7 +48,7 @@ class Cache {
   }
   /**
    * 删除项
-   * @param {*} key
+   * @param {String} key
    */
   removeData(key) {
     delete this[CACHE_DATA][key];
@@ -53,7 +57,8 @@ class Cache {
 
   /**
    * 获得项
-   * @param {*} key
+   * @param {String} key
+   * @return {*}
    */
   getData(key) {
     let now = new Date();

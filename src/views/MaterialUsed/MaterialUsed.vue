@@ -37,7 +37,6 @@
     </div>
     <van-popup
       v-model="popup_showed"
-      @touchmove.native.stop
     >
       <detail-table :data="selectedMaterialData" />
     </van-popup>

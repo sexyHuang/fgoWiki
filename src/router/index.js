@@ -27,5 +27,8 @@ const router = new Router({
   routes
 });
 globalGuards(router);
-
+router.beforeEach((to,from,next)=>{
+  console.log('hook 2');
+  next();
+})
 export default router;
